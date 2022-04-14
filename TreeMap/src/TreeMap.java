@@ -1,4 +1,72 @@
+import java.util.Collection;
+import java.util.Comparator;
+import java.util.Map;
+
 public class TreeMap<K extends Comparable<K>,V> {
+
+    private int size;
+
+    private Node<K, V> root; // корень
+
+    private Comparator<K> comparator;
+
+    private Node<K, V> min;
+
+    private Node<K, V> max;
+
+
+    public TreeMap(Collection<Node<K,V>> collection) {
+        //конструктор, добавляющий все эелементы из коллекции
+    }
+
+    public TreeMap(Comparator<K> comparator) {
+        //конструктор, инициализирующий comparator
+    }
+
+    public TreeMap() {
+        //конструктор по умолчанию
+    }
+
+    private int patentOf(Node<K,V> kid) {
+        // доводит ноду до совего родитеоя и возвращает число чёрных нод
+        return 0;
+    }
+
+    public V put() {
+        return null;
+    }
+
+    public void putAll(Map<K,V> map) {
+        // для реализации Java
+    }
+
+    public void putAll(TreeMap<K,V> map) {
+        // для нашей реализвции
+    }
+
+    public V remove() {
+        return null;
+    }
+
+    public V get(K key) {
+        return null;
+    }
+
+    public boolean containsKey(K key) {
+        return false;
+    }
+
+    public boolean containsValue(V value) {
+        return false;
+    }
+
+    public Collection<V> values() {
+        return null;
+    }
+
+    public int size() {
+        return 0;
+    }
 
     private static final boolean BLACK = true;
     private static final boolean RED = false;
@@ -7,8 +75,8 @@ public class TreeMap<K extends Comparable<K>,V> {
 
         private K key;
         private V value;
-        Node<K,V> leftKid;
-        Node<K,V> rightKid;
+        Node<K,V> left;
+        Node<K,V> right;
         Node<K,V> parent;
         boolean color;
 
@@ -18,6 +86,10 @@ public class TreeMap<K extends Comparable<K>,V> {
 
         public Node(K key, V value){
             //конструктор, инициализирующий поля key, value, color - красный
+        }
+
+        public Node() {
+            // инициализирует всё нуллями
         }
 
         public K getKey() {
