@@ -13,7 +13,11 @@ public class TreeMap<K extends Comparable<K>,V> {
         boolean color;
 
         public Node(K key, V value, boolean color) {
-            // конструктор, инициализирующий поля
+            // конструктор, инициализирующий поля key, value, color
+        }
+
+        public Node(K key, V value){
+            //конструктор, инициализирующий поля key, value, color - красный
         }
 
         public K getKey() {
