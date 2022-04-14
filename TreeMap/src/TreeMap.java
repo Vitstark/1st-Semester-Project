@@ -1,12 +1,19 @@
-public class TreeMap {
-    static class Node<K,V> {
+public class TreeMap<K extends Comparable<K>,V> {
+
+    private static final boolean BLACK = true;
+    private static final boolean RED = false;
+
+    static class Node<K extends Comparable<K>,V> {
 
         private K key;
         private V value;
-        private int hashCode; // hashCode должен хранить хэш ключа
+        Node<K,V> leftKid;
+        Node<K,V> rightKid;
+        Node<K,V> parent;
+        boolean color;
 
-        public Node(K key, V value) {
-            // конструктор, инициализирующий все поля
+        public Node(K key, V value, boolean color) {
+            // конструктор, инициализирующий поля
         }
 
         public K getKey() {
@@ -20,12 +27,6 @@ public class TreeMap {
         }
 
         @Override
-        public int hashCode() {
-            // возвращает hashCode
-            return 0;
-        }
-
-        @Override
         public boolean equals(Object o) {
             // сравнивает ноды
             return false;
@@ -36,6 +37,7 @@ public class TreeMap {
             // возвращает строку в формате {ключ - значение}
             return null;
         }
+
     }
 
 }

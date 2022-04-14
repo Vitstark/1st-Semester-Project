@@ -8,7 +8,7 @@ public class NodeTest {
 
     @Before
     public static void init() {
-        node = new TreeMap.Node<>("ooo", "acd");
+        node = new TreeMap.Node<>("ooo", "acd", false);
     }
 
     @Test
@@ -37,20 +37,20 @@ public class NodeTest {
 
     @Test
     public static void testEqualsDifferentKeys() {
-        assertFalse(node.equals(new TreeMap.Node<String, String>("1", "acd")));
-        assertFalse(node.equals(new TreeMap.Node<Integer, String>(1, "acd")));
+        assertFalse(node.equals(new TreeMap.Node<String, String>("1", "acd", false)));
+        assertFalse(node.equals(new TreeMap.Node<Integer, String>(1, "acd", false)));
     }
 
     @Test
     public static void testEqualsDifferentValues() {
-        assertFalse(node.equals(new TreeMap.Node<String, String>("ooo", "321")));
-        assertFalse(node.equals(new TreeMap.Node<String, Integer>("ooo", 1)));
+        assertFalse(node.equals(new TreeMap.Node<String, String>("ooo", "321", false)));
+        assertFalse(node.equals(new TreeMap.Node<String, Integer>("ooo", 1, false)));
     }
 
     @Test
     public static void testEqualsDifferentValuesAndKeys() {
-        assertFalse(node.equals(new TreeMap.Node<String, String>("asd", "321")));
-        assertFalse(node.equals(new TreeMap.Node<String, Integer>("1", 1)));
+        assertFalse(node.equals(new TreeMap.Node<String, String>("asd", "321", false)));
+        assertFalse(node.equals(new TreeMap.Node<String, Integer>("1", 1, false)));
     }
 
     @Test
