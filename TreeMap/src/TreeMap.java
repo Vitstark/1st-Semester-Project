@@ -27,7 +27,7 @@ public class TreeMap<K extends Comparable<K>,V> {
         //конструктор по умолчанию
     }
 
-    private int patentOf(Node<K,V> kid) {
+    private int parentOf(Node<K,V> kid) {
         // доводит ноду до совего родитеоя и возвращает число чёрных нод
         return 0;
     }
@@ -66,6 +66,11 @@ public class TreeMap<K extends Comparable<K>,V> {
 
     public int size() {
         return 0;
+    }
+
+    @Override
+    public String toString() {
+        return null;
     }
 
     private static final boolean BLACK = true;
