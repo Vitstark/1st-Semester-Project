@@ -30,7 +30,7 @@ public class TreeMap<K extends Comparable<K>,V> {
         //конструктор по умолчанию
     }
 
-    public V put() {
+    public V put(K key, V value) {
         return null;
     }
 
@@ -42,7 +42,7 @@ public class TreeMap<K extends Comparable<K>,V> {
         // для нашей реализации
     }
 
-    public V remove() {
+    public V remove(K key) {
         return null;
     }
 
