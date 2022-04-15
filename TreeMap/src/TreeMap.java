@@ -65,8 +65,8 @@ public class TreeMap<K extends Comparable<K>,V> {
         return 0;
     }
 
-    public LinkedList<V> getSortedLinkedListOfValues() {
-        //возвращает LinkedList<V> который содержит отсортированные по ключу значения, содержащиеся в нодах.
+    public LinkedList<Node<K,V>> getSortedLinkedListOfValues() {
+        //возвращает LinkedList<V> который содержит отсортированные по ключу ноды.
         return null;
     }
 
