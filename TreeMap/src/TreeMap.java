@@ -30,11 +30,6 @@ public class TreeMap<K extends Comparable<K>,V> {
         //конструктор по умолчанию
     }
 
-    private int parentOf(Node<K,V> kid) {
-        // доводит ноду до совего родителя и возвращает число чёрных нод на пути
-        return 0;
-    }
-
     public V put() {
         return null;
     }
@@ -59,8 +54,6 @@ public class TreeMap<K extends Comparable<K>,V> {
         return false;
     }
 
-    public boolean containsValue(K Value) { return false; }
-
     public Collection<V> values() {
         return null;
     }
@@ -82,7 +75,7 @@ public class TreeMap<K extends Comparable<K>,V> {
     private static final boolean BLACK = true;
     private static final boolean RED = false;
 
-    static class Node<K extends Comparable<K>,V> {
+    static class Node<K extends Comparable<K>,V> implements Comparable<Node<K,V>> {
 
         private K key;
         private V value;
@@ -125,6 +118,11 @@ public class TreeMap<K extends Comparable<K>,V> {
             return null;
         }
 
+        @Override
+        public int compareTo(Node<K, V> node) {
+            // возвращает compareTo ключей этой ноды с нодой в параметре
+            return 0;
+        }
     }
 
 }
