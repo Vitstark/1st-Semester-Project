@@ -7,6 +7,8 @@ public class TreeMap<K extends Comparable<K>,V> {
 
     private int size;
 
+    private int countOfBlackNodes;
+
     private Node<K, V> root; // корень
 
     private Comparator<K> comparator;
