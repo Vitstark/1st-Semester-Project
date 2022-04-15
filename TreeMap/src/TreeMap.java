@@ -1,5 +1,6 @@
 import java.util.Collection;
 import java.util.Comparator;
+import java.util.LinkedList;
 import java.util.Map;
 
 public class TreeMap<K extends Comparable<K>,V> {
@@ -28,7 +29,7 @@ public class TreeMap<K extends Comparable<K>,V> {
     }
 
     private int parentOf(Node<K,V> kid) {
-        // доводит ноду до совего родитеоя и возвращает число чёрных нод
+        // доводит ноду до совего родителя и возвращает число чёрных нод на пути
         return 0;
     }
 
@@ -41,7 +42,7 @@ public class TreeMap<K extends Comparable<K>,V> {
     }
 
     public void putAll(TreeMap<K,V> map) {
-        // для нашей реализвции
+        // для нашей реализации
     }
 
     public V remove() {
@@ -56,16 +57,17 @@ public class TreeMap<K extends Comparable<K>,V> {
         return false;
     }
 
-    public boolean containsValue(V value) {
-        return false;
-    }
-
     public Collection<V> values() {
         return null;
     }
 
     public int size() {
         return 0;
+    }
+
+    public LinkedList<V> getSortedLinkedListOfValues() {
+        //возвращает LinkedList<V> который содержит отсортированные по ключу значения, содержащиеся в нодах.
+        return null;
     }
 
     @Override
@@ -80,10 +82,10 @@ public class TreeMap<K extends Comparable<K>,V> {
 
         private K key;
         private V value;
+        boolean color;
         Node<K,V> left;
         Node<K,V> right;
         Node<K,V> parent;
-        boolean color;
 
         public Node(K key, V value, boolean color) {
             // конструктор, инициализирующий поля key, value, color
