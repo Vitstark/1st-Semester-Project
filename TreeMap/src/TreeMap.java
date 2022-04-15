@@ -59,6 +59,8 @@ public class TreeMap<K extends Comparable<K>,V> {
         return false;
     }
 
+    public boolean containsValue(K Value) { return false; }
+
     public Collection<V> values() {
         return null;
     }
