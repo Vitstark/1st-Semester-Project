@@ -11,11 +11,13 @@ public class TreeMap<K extends Comparable<K>,V> {
 
     private Node<K, V> root; // корень
 
-    private Comparator<K> comparator;
+    private Comparator<Node<K,V>> comparator;
 
     private Node<K, V> min;
 
     private Node<K, V> max;
+
+    private static final Node<Integer, Integer> LEAVE = new Node<>(null, null, true);
 
 
     public TreeMap(Collection<Node<K,V>> collection) {
@@ -30,7 +32,52 @@ public class TreeMap<K extends Comparable<K>,V> {
         //конструктор по умолчанию
     }
 
+    private int compare(Node<K,V> first, Node<K,V> second) {
+        if (comparator == null) {
+            return first.compareTo(second);
+        }
+        return comparator.compare(first, second);
+    }
+
     public V put(K key, V value) {
+        if (root == null) {
+            root = new Node<>(key, value, BLACK);
+            size++;
+            blackHeight++;
+            min = root;
+            max = root;
+            return null;
+        }
+
+        Node<K,V> newNode = new Node<>(key, value);
+        Node<K,V> cursor = root;
+        int numberOfBlackNodes = 1;
+
+        while (cursor != LEAVE) {
+            if (compare(newNode, cursor) > 0) {
+                cursor = cursor.right;
+            } else if (compare(newNode, cursor) < 0) {
+                cursor = cursor.left;
+            } else if (compare(newNode, cursor) == 0) {
+                if (newNode.getKey().equals(cursor.getKey())) {
+                    if (newNode.equals(cursor)) {
+                        return null;
+                    }
+                    V resultValue = cursor.value;
+                    cursor.value = newNode.value;
+                    return resultValue;
+                } else {
+                    cursor = cursor.right;
+                }
+            }
+
+            if (cursor.color == BLACK) {
+                numberOfBlackNodes++;
+            }
+        }
+
+
+
         return null;
     }
 
