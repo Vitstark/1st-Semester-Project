@@ -7,7 +7,7 @@ public class TreeMap<K extends Comparable<K>,V> {
 
     private int size;
 
-    private int countOfBlackNodes;
+    private int blackHeight;
 
     private Node<K, V> root; // корень
 
@@ -19,7 +19,7 @@ public class TreeMap<K extends Comparable<K>,V> {
 
 
     public TreeMap(Collection<Node<K,V>> collection) {
-        //конструктор, добавляющий все эелементы из коллекции
+        //конструктор, добавляющий все элементы из коллекции
     }
 
     public TreeMap(Comparator<K> comparator) {
@@ -67,7 +67,7 @@ public class TreeMap<K extends Comparable<K>,V> {
         return 0;
     }
 
-    public LinkedList<Node<K,V>> getSortedLinkedListOfValues() {
+    public LinkedList<Node<K,V>> getSortedLinkedList() {
         //возвращает LinkedList<V> который содержит отсортированные по ключу ноды.
         return null;
     }
