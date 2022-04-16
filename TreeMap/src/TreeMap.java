@@ -38,22 +38,72 @@ public class TreeMap<K extends Comparable<K>, V> {
         return comparator.compare(first, second);
     }
 
-    private Node<K,V> getBrother(Node<K,V> node) {
-        Node<K,V> brother = node.parent;
-        if (!brother.left.equals(node)) {
-            brother = brother.left;
+    private Node<K,V> getUncle(Node<K,V> node) {
+        Node<K,V> uncle = node.parent.parent;
+        if (uncle.left == node.parent) {
+            uncle = uncle.right;
         } else {
-            brother = brother.right;
+            uncle = uncle.left;
         }
-        return brother;
+        return uncle;
     }
 
-    private void changeColorsOf(Node<K,V> node, Node<K,V> brother) {
-        node.color = BLACK;
-        brother.color = BLACK;
-        if (node.parent != root) {
-            node.parent.color = RED;
+    private void changeColorsOfRelatives(Node<K,V> node) {
+        node.parent.color = BLACK;
+        getUncle(node).color = BLACK;
+        if (node.parent.parent != root) {
+            node.parent.parent.color = RED;
         }
+    }
+
+    private void turnLeft(Node<K,V> oldRoot) {
+        Node<K,V> newRoot = oldRoot.left;
+        if (oldRoot.parent.left == oldRoot) {
+            oldRoot.parent.left = newRoot;
+        } else {
+            oldRoot.parent.right = newRoot;
+        }
+        newRoot.parent = oldRoot.parent;
+        oldRoot.parent = newRoot;
+
+        oldRoot.left = newRoot.right;
+        newRoot.right = oldRoot;
+
+        newRoot.color = BLACK;
+        oldRoot.color = RED;
+    }
+
+    private void turnRight(Node <K,V> oldRoot) {
+        Node<K,V> newRoot = oldRoot.right;
+        if (oldRoot.parent.left == oldRoot) {
+            oldRoot.parent.left = newRoot;
+        } else {
+            oldRoot.parent.right = newRoot;
+        }
+        newRoot.parent = oldRoot.parent;
+        oldRoot.parent = newRoot;
+
+        oldRoot.right = newRoot.left;
+        newRoot.left = oldRoot;
+
+        newRoot.color = BLACK;
+        oldRoot.color = RED;
+    }
+
+    private void balance(Node<K,V> node) {
+        if (getUncle(node).color == RED) {
+            do {
+                changeColorsOfRelatives(node);
+                node = node.parent.parent;
+            } while (node.parent.color == RED && getUncle(node).color == RED);
+        } else {
+            if (node.parent == node.parent.parent.left) {
+                turnLeft(node.parent.parent);
+            } else {
+                turnRight(node.parent.parent);
+            }
+        }
+
     }
 
     public V put(K key, V value) {
@@ -104,7 +154,7 @@ public class TreeMap<K extends Comparable<K>, V> {
         size++;
 
         if (newNode.parent.color == RED) {
-            balance
+            balance(newNode);
         }
 
         return null;
