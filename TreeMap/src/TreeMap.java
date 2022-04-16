@@ -3,7 +3,7 @@ import java.util.Comparator;
 import java.util.LinkedList;
 import java.util.Map;
 
-public class TreeMap<K extends Comparable<K>,V> {
+public class TreeMap<K extends Comparable<K>, V> {
 
     private int size;
 
@@ -11,16 +11,15 @@ public class TreeMap<K extends Comparable<K>,V> {
 
     private Node<K, V> root; // корень
 
-    private Comparator<Node<K,V>> comparator;
+    private Comparator<Node<K, V>> comparator;
 
     private Node<K, V> min;
 
     private Node<K, V> max;
 
-    private static final Node<Integer, Integer> LEAVE = new Node<>(null, null, true);
+    private final Node<K, V> LEAVE = new Node(null, null, BLACK);
 
-
-    public TreeMap(Collection<Node<K,V>> collection) {
+    public TreeMap(Collection<Node<K, V>> collection) {
         //конструктор, добавляющий все элементы из коллекции
     }
 
@@ -32,28 +31,97 @@ public class TreeMap<K extends Comparable<K>,V> {
         //конструктор по умолчанию
     }
 
-    private int compare(Node<K,V> first, Node<K,V> second) {
+    private int compare(Node<K, V> first, Node<K, V> second) {
         if (comparator == null) {
             return first.compareTo(second);
         }
         return comparator.compare(first, second);
     }
 
+    private Node<K,V> getUncle(Node<K,V> node) {
+        Node<K,V> uncle = node.parent.parent;
+        if (uncle.left == node.parent) {
+            uncle = uncle.right;
+        } else {
+            uncle = uncle.left;
+        }
+        return uncle;
+    }
+
+    private void changeColorsOfRelatives(Node<K,V> node) {
+        node.parent.color = BLACK;
+        getUncle(node).color = BLACK;
+        if (node.parent.parent != root) {
+            node.parent.parent.color = RED;
+        }
+    }
+
+    private void turnLeft(Node<K,V> oldRoot) {
+        Node<K,V> newRoot = oldRoot.left;
+        if (oldRoot.parent.left == oldRoot) {
+            oldRoot.parent.left = newRoot;
+        } else {
+            oldRoot.parent.right = newRoot;
+        }
+        newRoot.parent = oldRoot.parent;
+        oldRoot.parent = newRoot;
+
+        oldRoot.left = newRoot.right;
+        newRoot.right = oldRoot;
+
+        newRoot.color = BLACK;
+        oldRoot.color = RED;
+    }
+
+    private void turnRight(Node <K,V> oldRoot) {
+        Node<K,V> newRoot = oldRoot.right;
+        if (oldRoot.parent.left == oldRoot) {
+            oldRoot.parent.left = newRoot;
+        } else {
+            oldRoot.parent.right = newRoot;
+        }
+        newRoot.parent = oldRoot.parent;
+        oldRoot.parent = newRoot;
+
+        oldRoot.right = newRoot.left;
+        newRoot.left = oldRoot;
+
+        newRoot.color = BLACK;
+        oldRoot.color = RED;
+    }
+
+    private void balance(Node<K,V> node) {
+        if (getUncle(node).color == RED) {
+            do {
+                changeColorsOfRelatives(node);
+                node = node.parent.parent;
+            } while (node.parent.color == RED && getUncle(node).color == RED);
+        } else {
+            if (node.parent == node.parent.parent.left) {
+                turnLeft(node.parent.parent);
+            } else {
+                turnRight(node.parent.parent);
+            }
+        }
+
+    }
+
     public V put(K key, V value) {
         if (root == null) {
             root = new Node<>(key, value, BLACK);
             size++;
-            blackHeight++;
+            blackHeight += 2;
             min = root;
             max = root;
+            root.left = new Node<>(root);
+            root.right = new Node<>(root);
             return null;
         }
 
-        Node<K,V> newNode = new Node<>(key, value);
-        Node<K,V> cursor = root;
-        int numberOfBlackNodes = 1;
+        Node<K, V> newNode = new Node<>(key, value);
+        Node<K, V> cursor = root;
 
-        while (cursor != LEAVE) {
+        while (!cursor.equals(LEAVE)) {
             if (compare(newNode, cursor) > 0) {
                 cursor = cursor.right;
             } else if (compare(newNode, cursor) < 0) {
@@ -70,22 +138,33 @@ public class TreeMap<K extends Comparable<K>,V> {
                     cursor = cursor.right;
                 }
             }
-
-            if (cursor.color == BLACK) {
-                numberOfBlackNodes++;
-            }
         }
+        cursor = cursor.parent;
 
+        if (compare(newNode, cursor) < 0) {
+            cursor.left = newNode;
+        } else {
+            cursor.right = newNode;
+        }
+        newNode.color = RED;
+        newNode.left = new Node<>(newNode);
+        newNode.right = new Node<>(newNode);
+        newNode.parent = cursor;
 
+        size++;
+
+        if (newNode.parent.color == RED) {
+            balance(newNode);
+        }
 
         return null;
     }
 
-    public void putAll(Map<K,V> map) {
+    public void putAll(Map<K, V> map) {
         // для реализации Java
     }
 
-    public void putAll(TreeMap<K,V> map) {
+    public void putAll(TreeMap<K, V> map) {
         // для нашей реализации
     }
 
@@ -109,7 +188,7 @@ public class TreeMap<K extends Comparable<K>,V> {
         return 0;
     }
 
-    public LinkedList<Node<K,V>> getSortedLinkedList() {
+    public LinkedList<Node<K, V>> getSortedLinkedList() {
         //возвращает LinkedList<V> который содержит отсортированные по ключу ноды.
         return null;
     }
@@ -122,25 +201,29 @@ public class TreeMap<K extends Comparable<K>,V> {
     private static final boolean BLACK = true;
     private static final boolean RED = false;
 
-    static class Node<K extends Comparable<K>,V> implements Comparable<Node<K,V>> {
+    static class Node<K extends Comparable<K>, V> implements Comparable<Node<K, V>> {
 
         private K key;
         private V value;
         boolean color;
-        Node<K,V> left;
-        Node<K,V> right;
-        Node<K,V> parent;
+        Node<K, V> left;
+        Node<K, V> right;
+        Node<K, V> parent;
 
         public Node(K key, V value, boolean color) {
             // конструктор, инициализирующий поля key, value, color
         }
 
-        public Node(K key, V value){
-            //конструктор, инициализирующий поля key, value, color - красный
+        public Node(K key, V value) {
+            // конструктор, инициализирующий поля key, value, color - красный
         }
 
         public Node() {
-            // инициализирует всё нуллями
+            // констурктор, инициализирует всё нуллями
+        }
+
+        public Node(Node<K, V> parent) {
+            // конструктор, инициализирует только родителя и цвет в чёрный (лист)
         }
 
         public K getKey() {
