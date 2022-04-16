@@ -7,11 +7,9 @@ public class TreeMap<K extends Comparable<K>, V> {
 
     private int size;
 
-    private int blackHeight;
-
     private Node<K, V> root; // корень
 
-    private Comparator<Node<K, V>> comparator;
+    private Comparator<K> comparator;
 
     private Node<K, V> min;
 
@@ -35,7 +33,7 @@ public class TreeMap<K extends Comparable<K>, V> {
         if (comparator == null) {
             return first.compareTo(second);
         }
-        return comparator.compare(first, second);
+        return comparator.compare(first.key, second.key);
     }
 
     private Node<K,V> getUncle(Node<K,V> node) {
@@ -110,7 +108,6 @@ public class TreeMap<K extends Comparable<K>, V> {
         if (root == null) {
             root = new Node<>(key, value, BLACK);
             size++;
-            blackHeight += 2;
             min = root;
             max = root;
             root.left = new Node<>(root);
@@ -157,6 +154,14 @@ public class TreeMap<K extends Comparable<K>, V> {
             balance(newNode);
         }
 
+        if (compare(newNode, max) >= 0) {
+            max = newNode;
+        }
+
+        if (compare(newNode, min) < 0) {
+            min = newNode;
+        }
+
         return null;
     }
 
@@ -185,7 +190,7 @@ public class TreeMap<K extends Comparable<K>, V> {
     }
 
     public int size() {
-        return 0;
+        return size;
     }
 
     public LinkedList<Node<K, V>> getSortedLinkedList() {
@@ -196,6 +201,22 @@ public class TreeMap<K extends Comparable<K>, V> {
     @Override
     public String toString() {
         return null;
+    }
+
+    public Node<K, V> getRoot() {
+        return root;
+    }
+
+    public Node<K, V> getMin() {
+        return min;
+    }
+
+    public Node<K, V> getMax() {
+        return max;
+    }
+
+    public Comparator<K> getComparator() {
+        return comparator;
     }
 
     private static final boolean BLACK = true;
