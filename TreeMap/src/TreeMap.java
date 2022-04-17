@@ -346,11 +346,11 @@ public class TreeMap<K extends Comparable<K>, V> {
         public boolean equals(Object o) {
             // сравнивает ноды по ключу и значению
 
-            if (this == o) {
+            if (this == o || this == null && o == null) {
                 return true;
             }
 
-            if (this == null || this.getClass() != o.getClass()) {
+            if ((this == null ^ o == null) || this.getClass() != o.getClass()) {
                 return false;
             }
 
