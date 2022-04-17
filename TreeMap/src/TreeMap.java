@@ -1,7 +1,4 @@
-import java.util.Collection;
-import java.util.Comparator;
-import java.util.LinkedList;
-import java.util.Map;
+import java.util.*;
 
 public class TreeMap<K extends Comparable<K>, V> {
 
@@ -17,15 +14,15 @@ public class TreeMap<K extends Comparable<K>, V> {
 
     private final Node<K, V> LEAVE = new Node(null, null, BLACK);
 
-    public TreeMap(Collection<Node<K, V>> collection) {
+    public TreeMap(Collection<Node<K, V>> collection) { //Artyom
         //конструктор, добавляющий все элементы из коллекции
     }
 
-    public TreeMap(Comparator<K> comparator) {
+    public TreeMap(Comparator<K> comparator) { //Artyom
         //конструктор, инициализирующий comparator
     }
 
-    public TreeMap() {
+    public TreeMap() { //Artyom
         //конструктор по умолчанию
     }
 
@@ -165,14 +162,6 @@ public class TreeMap<K extends Comparable<K>, V> {
         return null;
     }
 
-    public void putAll(Map<K, V> map) {
-        // для реализации Java
-    }
-
-    public void putAll(TreeMap<K, V> map) {
-        // для нашей реализации
-    }
-
     private void deleteNodeWithOneKid(Node<K, V> node) {
         Node<K, V> parent = node.parent;
         if (parent.left == node) {
@@ -259,15 +248,20 @@ public class TreeMap<K extends Comparable<K>, V> {
         return null;
     }
 
+    public void putAll(TreeMap<K, V> map) { //Long
+        // для нашей реализации
+    }
+
     public V get(K key) {
         return null;
-    }
+    } // Danya
 
     public boolean containsKey(K key) {
         return false;
-    }
+    } // Danya
 
-    public Collection<V> values() {
+    public Collection<V> values() { //Long
+        // попробуй реализовать с помощью getSortedList()
         return null;
     }
 
@@ -275,7 +269,7 @@ public class TreeMap<K extends Comparable<K>, V> {
         return size;
     }
 
-    public LinkedList<Node<K, V>> getSortedLinkedList() {
+    public List<Node<K, V>> getSortedList() { // Sanya
         //возвращает LinkedList<V> который содержит отсортированные по ключу ноды.
         return null;
     }
@@ -283,7 +277,7 @@ public class TreeMap<K extends Comparable<K>, V> {
     @Override
     public String toString() {
         return null;
-    }
+    } // Sanya
 
     public Node<K, V> getRoot() {
         return root;
@@ -304,7 +298,7 @@ public class TreeMap<K extends Comparable<K>, V> {
     private static final boolean BLACK = true;
     private static final boolean RED = false;
 
-    static class Node<K extends Comparable<K>, V> implements Comparable<Node<K, V>> {
+    static class Node<K extends Comparable<K>, V> implements Comparable<Node<K, V>> { // Dat
 
         private K key;
         private V value;
