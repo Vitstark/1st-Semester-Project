@@ -36,8 +36,8 @@ public class TreeMap<K extends Comparable<K>, V> {
         return comparator.compare(first.key, second.key);
     }
 
-    private Node<K,V> getUncle(Node<K,V> node) {
-        Node<K,V> uncle = node.parent.parent;
+    private Node<K, V> getUncle(Node<K, V> node) {
+        Node<K, V> uncle = node.parent.parent;
         if (uncle.left == node.parent) {
             uncle = uncle.right;
         } else {
@@ -46,7 +46,7 @@ public class TreeMap<K extends Comparable<K>, V> {
         return uncle;
     }
 
-    private void changeColorsOfRelatives(Node<K,V> node) {
+    private void changeColorsOfRelatives(Node<K, V> node) {
         node.parent.color = BLACK;
         getUncle(node).color = BLACK;
         if (node.parent.parent != root) {
@@ -54,8 +54,8 @@ public class TreeMap<K extends Comparable<K>, V> {
         }
     }
 
-    private void turnLeft(Node<K,V> oldRoot) {
-        Node<K,V> newRoot = oldRoot.left;
+    private void turnLeft(Node<K, V> oldRoot) {
+        Node<K, V> newRoot = oldRoot.left;
         if (oldRoot.parent.left == oldRoot) {
             oldRoot.parent.left = newRoot;
         } else {
@@ -71,8 +71,8 @@ public class TreeMap<K extends Comparable<K>, V> {
         oldRoot.color = RED;
     }
 
-    private void turnRight(Node <K,V> oldRoot) {
-        Node<K,V> newRoot = oldRoot.right;
+    private void turnRight(Node<K, V> oldRoot) {
+        Node<K, V> newRoot = oldRoot.right;
         if (oldRoot.parent.left == oldRoot) {
             oldRoot.parent.left = newRoot;
         } else {
@@ -88,7 +88,7 @@ public class TreeMap<K extends Comparable<K>, V> {
         oldRoot.color = RED;
     }
 
-    private void balance(Node<K,V> node) {
+    private void balance(Node<K, V> node) {
         if (getUncle(node).color == RED) {
             do {
                 changeColorsOfRelatives(node);
@@ -173,7 +173,89 @@ public class TreeMap<K extends Comparable<K>, V> {
         // для нашей реализации
     }
 
+    private void deleteNodeWithOneKid(Node<K, V> node) {
+        Node<K, V> parent = node.parent;
+        if (parent.left == node) {
+            parent.left = node.left.equals(LEAVE) ? node.right : node.left;
+            if (parent.color == RED && parent.left.color == RED) {
+                parent.left.color = BLACK;
+            }
+        } else {
+            parent.right = node.left.equals(LEAVE) ? node.right : node.left;
+            if (parent.color == RED && parent.right.color == RED) {
+                parent.right.color = BLACK;
+            }
+        }
+    }
+
+    private void deleteNodeWithTwoKids(Node<K, V> node) {
+        Node<K,V> nearestNode = node.right;
+        while (!nearestNode.left.equals(LEAVE)) {
+            nearestNode = nearestNode.left;
+        }
+
+        node.key = nearestNode.key;
+        node.value = nearestNode.value;
+        if (node != root) {
+            node.color = nearestNode.color;
+        }
+        nearestNode.parent.left = new Node<>(nearestNode.parent);
+
+
+    }
+
+    private void balanceAfterRemove(Node<K, V> node) {
+
+    }
+
     public V remove(K key) {
+        if (root == null) {
+            return null;
+        }
+
+        Node<K, V> cursor = root;
+
+        V value;
+
+        while (!cursor.equals(LEAVE) && !cursor.key.equals(key)) {
+            if (compare(new Node<>(key, null), cursor) < 0) {
+                cursor = cursor.left;
+            } else {
+                cursor = cursor.right;
+            }
+        }
+
+        if (cursor.equals(LEAVE)) {
+            return null;
+        }
+
+        value = cursor.value;
+        size--;
+
+        if (cursor.equals(root) && size == 1) {
+            root = null;
+            return value;
+        }
+
+        if (cursor.left.equals(LEAVE) && cursor.right.equals(LEAVE)) {
+            if (cursor.parent.left == cursor) {
+                cursor.parent.left = null;
+            } else {
+                cursor.parent.right = null;
+            }
+        }
+
+        if (cursor.left.equals(LEAVE) ^ cursor.right.equals(LEAVE)) {
+            deleteNodeWithOneKid(cursor);
+        }
+
+        if (!cursor.left.equals(LEAVE) && !cursor.right.equals(LEAVE)) {
+            deleteNodeWithTwoKids(cursor);
+        }
+
+        balanceAfterRemove(cursor);
+
+        size--;
         return null;
     }
 
@@ -259,7 +341,7 @@ public class TreeMap<K extends Comparable<K>, V> {
 
         @Override
         public boolean equals(Object o) {
-            // сравнивает ноды
+            // сравнивает ноды по ключу и значению
             return false;
         }
 
