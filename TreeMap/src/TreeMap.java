@@ -14,16 +14,16 @@ public class TreeMap<K extends Comparable<K>, V> {
 
     private final Node<K, V> LEAVE = new Node(null, null, BLACK);
 
-    public TreeMap(Collection<Node<K, V>> collection) { //Artyom
-        //конструктор, добавляющий все элементы из коллекции
+    public TreeMap(Collection<Node<K, V>> collection) { // Artyom
+        // конструктор, добавляющий все элементы из коллекции
     }
 
-    public TreeMap(Comparator<K> comparator) { //Artyom
-        //конструктор, инициализирующий comparator
+    public TreeMap(Comparator<K> comparator) { // Artyom
+        // конструктор, инициализирующий comparator
     }
 
-    public TreeMap() { //Artyom
-        //конструктор по умолчанию
+    public TreeMap() { // Artyom
+        // конструктор по умолчанию
     }
 
     private int compare(Node<K, V> first, Node<K, V> second) {
@@ -178,7 +178,7 @@ public class TreeMap<K extends Comparable<K>, V> {
     }
 
     private void deleteNodeWithTwoKids(Node<K, V> node) {
-        Node<K,V> nearestNode = node.right;
+        Node<K, V> nearestNode = node.right;
         while (!nearestNode.left.equals(LEAVE)) {
             nearestNode = nearestNode.left;
         }
@@ -189,7 +189,6 @@ public class TreeMap<K extends Comparable<K>, V> {
             node.color = nearestNode.color;
         }
         nearestNode.parent.left = new Node<>(nearestNode.parent);
-
 
     }
 
@@ -248,7 +247,7 @@ public class TreeMap<K extends Comparable<K>, V> {
         return null;
     }
 
-    public void putAll(TreeMap<K, V> map) { //Long
+    public void putAll(TreeMap<K, V> map) { // Long
         // для нашей реализации
     }
 
@@ -260,7 +259,7 @@ public class TreeMap<K extends Comparable<K>, V> {
         return false;
     } // Danya
 
-    public Collection<V> values() { //Long
+    public Collection<V> values() { // Long
         // попробуй реализовать с помощью getSortedList()
         return null;
     }
@@ -270,7 +269,7 @@ public class TreeMap<K extends Comparable<K>, V> {
     }
 
     public List<Node<K, V>> getSortedList() { // Sanya
-        //возвращает LinkedList<V> который содержит отсортированные по ключу ноды.
+        // возвращает LinkedList<V> который содержит отсортированные по ключу ноды.
         return null;
     }
 
@@ -346,6 +345,29 @@ public class TreeMap<K extends Comparable<K>, V> {
         @Override
         public boolean equals(Object o) {
             // сравнивает ноды по ключу и значению
+
+            if (this == o) {
+                return true;
+            }
+
+            if (this == null || this.getClass() != o.getClass()) {
+                return false;
+            }
+
+            Node<K, V> hihi = (Node<K, V>) o;
+
+            if (this.key == null ^ hihi.key == null) {
+                return false;
+            }
+
+            if (this.value == null ^ hihi.value == null) {
+                return false;
+            }
+
+            if (this.key.equals(hihi.key) && this.value.equals(hihi.value)) {
+                return true;
+            }
+
             return false;
         }
 
