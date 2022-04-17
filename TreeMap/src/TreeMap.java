@@ -62,10 +62,8 @@ public class TreeMap<K extends Comparable<K>, V> {
         oldRoot.parent = newRoot;
 
         oldRoot.left = newRoot.right;
+        oldRoot.left.parent = oldRoot;
         newRoot.right = oldRoot;
-
-        newRoot.color = BLACK;
-        oldRoot.color = RED;
     }
 
     private void turnRight(Node<K, V> oldRoot) {
@@ -79,13 +77,11 @@ public class TreeMap<K extends Comparable<K>, V> {
         oldRoot.parent = newRoot;
 
         oldRoot.right = newRoot.left;
+        oldRoot.right.left = oldRoot;
         newRoot.left = oldRoot;
-
-        newRoot.color = BLACK;
-        oldRoot.color = RED;
     }
 
-    private void balance(Node<K, V> node) {
+    private void balanceAfterPut(Node<K, V> node) {
         if (getUncle(node).color == RED) {
             do {
                 changeColorsOfRelatives(node);
@@ -94,9 +90,12 @@ public class TreeMap<K extends Comparable<K>, V> {
         } else {
             if (node.parent == node.parent.parent.left) {
                 turnLeft(node.parent.parent);
+                node.parent.right.color = RED;
             } else {
                 turnRight(node.parent.parent);
+                node.parent.left.color = RED;
             }
+            node.parent.color = BLACK;
         }
 
     }
@@ -148,7 +147,7 @@ public class TreeMap<K extends Comparable<K>, V> {
         size++;
 
         if (newNode.parent.color == RED) {
-            balance(newNode);
+            balanceAfterPut(newNode);
         }
 
         if (compare(newNode, max) >= 0) {
@@ -160,6 +159,16 @@ public class TreeMap<K extends Comparable<K>, V> {
         }
 
         return null;
+    }
+
+    private void deleteNodeWithoutKids(Node<K,V> node) {
+        Node<K, V> parent = node.parent;
+        if (node.parent.left == node) {
+            parent.left = new Node(parent);
+        } else {
+            parent.right = new Node(parent);
+        }
+        node = parent.right;
     }
 
     private void deleteNodeWithOneKid(Node<K, V> node) {
@@ -201,23 +210,12 @@ public class TreeMap<K extends Comparable<K>, V> {
             return null;
         }
 
-        Node<K, V> cursor = root;
-
-        V value;
-
-        while (!cursor.equals(LEAVE) && !cursor.key.equals(key)) {
-            if (compare(new Node<>(key, null), cursor) < 0) {
-                cursor = cursor.left;
-            } else {
-                cursor = cursor.right;
-            }
-        }
-
+        Node<K, V> cursor = binarySearch(key);
         if (cursor.equals(LEAVE)) {
             return null;
         }
 
-        value = cursor.value;
+        V value = cursor.value;
         size--;
 
         if (cursor.equals(root) && size == 1) {
@@ -226,25 +224,31 @@ public class TreeMap<K extends Comparable<K>, V> {
         }
 
         if (cursor.left.equals(LEAVE) && cursor.right.equals(LEAVE)) {
-            if (cursor.parent.left == cursor) {
-                cursor.parent.left = null;
-            } else {
-                cursor.parent.right = null;
-            }
+            deleteNodeWithoutKids(cursor);
         }
-
         if (cursor.left.equals(LEAVE) ^ cursor.right.equals(LEAVE)) {
             deleteNodeWithOneKid(cursor);
         }
-
         if (!cursor.left.equals(LEAVE) && !cursor.right.equals(LEAVE)) {
             deleteNodeWithTwoKids(cursor);
         }
 
         balanceAfterRemove(cursor);
 
-        size--;
         return null;
+    }
+
+    private Node<K,V> binarySearch(K key) {
+        Node<K, V> cursor = root;
+        Node<K, V> necessaryNode = new Node(key, null);
+        while (!cursor.equals(LEAVE) && !cursor.key.equals(key)) {
+            if (compare(necessaryNode, cursor) < 0) {
+                cursor = cursor.left;
+            } else {
+                cursor = cursor.right;
+            }
+        }
+        return cursor;
     }
 
     public void putAll(TreeMap<K, V> map) { // Long
@@ -254,6 +258,8 @@ public class TreeMap<K extends Comparable<K>, V> {
     public V get(K key) {
         return null;
     } // Danya
+
+    // можно использовать binarySearch()
 
     public boolean containsKey(K key) {
         return false;
