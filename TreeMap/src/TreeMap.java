@@ -309,10 +309,15 @@ public class TreeMap<K extends Comparable<K>, V> {
 
         public Node(K key, V value, boolean color) {
             // конструктор, инициализирующий поля key, value, color
+            this.key = key;
+            this.value = value;
+            this.color = color;
+
         }
 
         public Node(K key, V value) {
             // конструктор, инициализирующий поля key, value, color - красный
+            this(key, value, RED);
         }
 
         public Node() {
@@ -321,16 +326,21 @@ public class TreeMap<K extends Comparable<K>, V> {
 
         public Node(Node<K, V> parent) {
             // конструктор, инициализирует только родителя и цвет в чёрный (лист)
+            this.key = null;
+            this.value = null;
+            this.color = BLACK;
+            this.parent = parent;
+
         }
 
         public K getKey() {
             // возвращает ключ
-            return null;
+            return key;
         }
 
         public V getValue() {
             // возвращает значение
-            return null;
+            return value;
         }
 
         @Override
