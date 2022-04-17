@@ -1,4 +1,3 @@
-import com.sun.source.tree.Tree;
 import org.junit.*;
 import static org.junit.Assert.*;
 
@@ -90,6 +89,4 @@ public class TreeMapTestPut {
         assertEquals(treeMapWithThreeElem.getMin().color, false);
         assertEquals(treeMapWithThreeElem.getMax().color, false);
     }
-
-
 }
