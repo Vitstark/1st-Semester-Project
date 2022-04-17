@@ -345,21 +345,17 @@ public class TreeMap<K extends Comparable<K>, V> {
         @Override
         public boolean equals(Object o) {
             // сравнивает ноды по ключу и значению
-
             if (this == o || this == null && o == null) {
                 return true;
             }
-
             if ((this == null ^ o == null) || this.getClass() != o.getClass()) {
                 return false;
             }
 
             Node<K, V> hihi = (Node<K, V>) o;
-
             if (this.key == null ^ hihi.key == null) {
                 return false;
             }
-
             if (this.value == null ^ hihi.value == null) {
                 return false;
             }
@@ -367,7 +363,6 @@ public class TreeMap<K extends Comparable<K>, V> {
             if (this.key.equals(hihi.key) && this.value.equals(hihi.value)) {
                 return true;
             }
-
             return false;
         }
 
