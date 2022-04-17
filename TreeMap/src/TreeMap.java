@@ -165,40 +165,54 @@ public class TreeMap<K extends Comparable<K>, V> {
         Node<K, V> parent = node.parent;
         if (node.parent.left == node) {
             parent.left = new Node(parent);
+            node = parent.left;
         } else {
             parent.right = new Node(parent);
+            node = parent.right;
         }
-        node = parent.right;
     }
 
     private void deleteNodeWithOneKid(Node<K, V> node) {
         Node<K, V> parent = node.parent;
         if (parent.left == node) {
             parent.left = node.left.equals(LEAVE) ? node.right : node.left;
+            parent.left.parent = parent;
+            node = parent.left;
             if (parent.color == RED && parent.left.color == RED) {
                 parent.left.color = BLACK;
             }
         } else {
             parent.right = node.left.equals(LEAVE) ? node.right : node.left;
+            parent.right.parent = parent;
+            node = parent.right;
             if (parent.color == RED && parent.right.color == RED) {
                 parent.right.color = BLACK;
             }
         }
     }
 
-    private void deleteNodeWithTwoKids(Node<K, V> node) {
+    private boolean deleteNodeWithTwoKids(Node<K, V> node) {
         Node<K, V> nearestNode = node.right;
+
         while (!nearestNode.left.equals(LEAVE)) {
             nearestNode = nearestNode.left;
         }
 
         node.key = nearestNode.key;
         node.value = nearestNode.value;
+
         if (node != root) {
             node.color = nearestNode.color;
         }
-        nearestNode.parent.left = new Node<>(nearestNode.parent);
 
+        boolean colorOfdeletedNode = nearestNode.color;
+        if (nearestNode.right.equals(LEAVE)) {
+            deleteNodeWithoutKids(nearestNode);
+        } else {
+            deleteNodeWithOneKid(nearestNode);
+        }
+        node = nearestNode;
+        return colorOfdeletedNode;
     }
 
     private void balanceAfterRemove(Node<K, V> node) {
@@ -216,10 +230,13 @@ public class TreeMap<K extends Comparable<K>, V> {
         }
 
         V value = cursor.value;
+        boolean colorOfDeletedNode = cursor.color;
         size--;
 
         if (cursor.equals(root) && size == 1) {
             root = null;
+            min = null;
+            max = null;
             return value;
         }
 
@@ -230,10 +247,12 @@ public class TreeMap<K extends Comparable<K>, V> {
             deleteNodeWithOneKid(cursor);
         }
         if (!cursor.left.equals(LEAVE) && !cursor.right.equals(LEAVE)) {
-            deleteNodeWithTwoKids(cursor);
+            colorOfDeletedNode = deleteNodeWithTwoKids(cursor);
         }
 
-        balanceAfterRemove(cursor);
+        if (colorOfDeletedNode == BLACK) {
+            balanceAfterRemove(cursor);
+        }
 
         return null;
     }
