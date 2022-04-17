@@ -61,9 +61,9 @@ public class TreeMapTest {
     @Test
     public void testMultiplyPutCheckMaxMin() {
         assertEquals(3, treeMapWithThreeElem.size());
-        assertEquals(new TreeMap.Node<>(3, 3), treeMapWithThreeElem.getMax());
-        assertEquals(new TreeMap.Node<>(1, 1), treeMapWithThreeElem.getMin());
-        assertEquals(new TreeMap.Node<>(2, 2), treeMapWithThreeElem.getRoot());
+        assertEquals(new TreeMap.Node<>(3, 10), treeMapWithThreeElem.getMax());
+        assertEquals(new TreeMap.Node<>(1, 10), treeMapWithThreeElem.getMin());
+        assertEquals(new TreeMap.Node<>(2, 12), treeMapWithThreeElem.getRoot());
     }
 
     @Test
@@ -84,6 +84,7 @@ public class TreeMapTest {
         assertEquals(treeMapWithThreeElem.getMin().right, new TreeMap.Node<>(treeMapWithThreeElem.getMin()));
     }
 
+    @Test
     public void testMultiplyPutCheckColors() {
         assertEquals(treeMapWithThreeElem.getRoot().color, true);
         assertEquals(treeMapWithThreeElem.getMin().color, false);

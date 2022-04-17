@@ -353,11 +353,12 @@ public class TreeMap<K extends Comparable<K>, V> {
             }
 
             Node<K, V> hihi = (Node<K, V>) o;
-            if (this.key == null ^ hihi.key == null) {
+            if (this.key == null ^ hihi.key == null || this.value == null ^ hihi.value == null) {
                 return false;
             }
-            if (this.value == null ^ hihi.value == null) {
-                return false;
+
+            if (this.key == null && hihi.key == null || this.value == null && hihi.value == null) {
+                return true;
             }
 
             if (this.key.equals(hihi.key) && this.value.equals(hihi.value)) {
