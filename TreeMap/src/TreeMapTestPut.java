@@ -2,7 +2,7 @@ import com.sun.source.tree.Tree;
 import org.junit.*;
 import static org.junit.Assert.*;
 
-public class TreeMapTest {
+public class TreeMapTestPut {
 
     public static TreeMap<Integer, Integer> emptyTreeMap;
     public static TreeMap<Integer, Integer> treeMapWithThreeElem;
