@@ -352,13 +352,13 @@ public class TreeMap<K extends Comparable<K>, V> {
         @Override
         public String toString() {
             // возвращает строку в формате {ключ - значение}
-            return null;
+            return "{" + this.key + " - " + this.value + "}";
         }
 
         @Override
         public int compareTo(Node<K, V> node) {
             // возвращает compareTo ключей этой ноды с нодой в параметре
-            return 0;
+            return key.compareTo(node.getKey());
         }
     }
 
