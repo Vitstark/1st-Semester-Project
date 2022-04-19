@@ -284,10 +284,28 @@ public class TreeMap<K extends Comparable<K>, V> {
         return colorOfdeletedNode;
     }
 
-    private void balanceAfterRemove(Node<K, V> node) {
-        if (getBrother(node).color == BLACK) {
+    private void balanceIfNodeHas3BlackRelatives(Node<K, V> node) {
+        Node<K, V> brother = getBrother(node);
+        do {
+            brother.color = RED;
+            brother = getBrother(node);
+        } while (node != null && node.color == BLACK && brother.color == BLACK
+                && brother.left.color == BLACK && brother.right.color == BLACK);
+    }
 
+    private void balanceIfOutsideNephewISBlack(Node<K,V> node) {
+        Node<K,V> brother = new Node<>()
+    }
+
+    private void balanceAfterRemove(Node<K, V> node) {
+        Node<K, V> brother = getBrother(node);
+        if (brother.color == BLACK && brother.left.color == BLACK
+                && brother.right.color == BLACK) {
+            balanceIfNodeHas3BlackRelatives(node);
+            return;
         }
+
+
     }
 
     private Node<K,V> binarySearch(K key) {
