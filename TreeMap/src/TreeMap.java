@@ -126,6 +126,16 @@ public class TreeMap<K extends Comparable<K>, V> {
         return uncle;
     }
 
+    private Node<K, V> getBrother(Node<K, V> node) {
+        Node<K, V> brother = node.parent;
+        if (brother.left == node) {
+            brother = brother.right;
+        } else {
+            brother = brother.left;
+        }
+        return brother;
+    }
+
     private void changeColorsOfRelatives(Node<K, V> node) {
         node.parent.color = BLACK;
         getUncle(node).color = BLACK;
@@ -188,7 +198,7 @@ public class TreeMap<K extends Comparable<K>, V> {
         }
 
         Node<K, V> cursor = binarySearch(key);
-        if (cursor.equals(LEAVE)) {
+        if (cursor == null) {
             return null;
         }
 
@@ -220,7 +230,7 @@ public class TreeMap<K extends Comparable<K>, V> {
         return null;
     }
 
-    private void deleteNodeWithoutKids(Node<K,V> node) {
+    private void deleteNodeWithoutKids(Node<K, V> node) {
         Node<K, V> parent = node.parent;
         if (node.parent.left == node) {
             parent.left = new Node(parent);
@@ -264,24 +274,105 @@ public class TreeMap<K extends Comparable<K>, V> {
             node.color = nearestNode.color;
         }
 
-        boolean colorOfdeletedNode = nearestNode.color;
+        boolean colorOfDeletedNode = nearestNode.color;
         if (nearestNode.right.equals(LEAVE)) {
             deleteNodeWithoutKids(nearestNode);
         } else {
             deleteNodeWithOneKid(nearestNode);
         }
         node = nearestNode;
-        return colorOfdeletedNode;
+        return colorOfDeletedNode;
+    }
+
+    private void balanceIfNodeHas3BlackRelatives(Node<K, V> node) {
+        Node<K, V> brother = getBrother(node);
+        do {
+            brother.color = RED;
+            node.parent.color = BLACK;
+            brother = getBrother(node);
+        } while (node != null && node.color == BLACK && brother.color == BLACK
+                && brother.left.color == BLACK && brother.right.color == BLACK);
+    }
+
+    private void balanceIfOutsideNephewOfLeftBrotherIsRED(Node<K, V> node) {
+        Node<K, V> brother = getBrother(node);
+        turnLeft(node.parent);
+
+        boolean colorOfBrother = brother.color;
+
+        brother.color = brother.right.color;
+        brother.right.color = colorOfBrother;
+        brother.left.color = BLACK;
+    }
+
+    private void balanceIfOutsideNephewOfRightBrotherIsRED(Node<K, V> node) {
+        Node<K, V> brother = getBrother(node);
+        turnRight(node.parent);
+
+        boolean colorOfBrother = brother.color;
+
+        brother.color = brother.left.color;
+        brother.left.color = colorOfBrother;
+        brother.right.color = BLACK;
+    }
+
+    private void balanceIfInsideNephewOfLeftBrotherIsRED(Node<K, V> node) {
+        Node<K, V> brother = getBrother(node);
+        turnLeft(brother);
+        brother.color = RED;
+        brother.parent.color = BLACK;
+        balanceIfOutsideNephewOfLeftBrotherIsRED(node);
+    }
+
+    private void balanceIfInsideNephewOfRightBrotherIsRED(Node<K, V> node) {
+        Node<K, V> brother = getBrother(node);
+        turnRight(brother);
+        brother.color = RED;
+        brother.parent.color = BLACK;
+        balanceIfOutsideNephewOfRightBrotherIsRED(node);
     }
 
     private void balanceAfterRemove(Node<K, V> node) {
+        Node<K, V> brother = getBrother(node);
+
+        if (brother.color == RED) {
+            if (node.parent.right == brother) {
+                turnRight(node.parent);
+            } else {
+                turnLeft(node.parent);
+
+            }
+            brother.color = RED;
+            node.parent.color = RED;
+        }
+
+        if (brother.color == BLACK && brother.left.color == BLACK
+                && brother.right.color == BLACK) {
+            balanceIfNodeHas3BlackRelatives(node);
+            return;
+        }
+
+        if (brother.color == BLACK) {
+            if (node.parent.right == brother) {
+                if (brother.right.color == RED) {
+                    balanceIfOutsideNephewOfRightBrotherIsRED(node);
+                } else if (brother.left.color == RED)
+                    balanceIfInsideNephewOfRightBrotherIsRED(node);
+            } else {
+                if (brother.left.color == RED) {
+                    balanceIfOutsideNephewOfLeftBrotherIsRED(node);
+                } else if (brother.right.color == RED) {
+                    balanceIfInsideNephewOfLeftBrotherIsRED(node);
+                }
+            }
+        }
 
     }
 
-    private Node<K,V> binarySearch(K key) {
+    private Node<K, V> binarySearch(K key) {
         Node<K, V> cursor = root;
         Node<K, V> necessaryNode = new Node(key, null);
-        while (!cursor.equals(LEAVE) && !cursor.key.equals(key)) {
+        while (cursor != null && !cursor.key.equals(key)) {
             if (compare(necessaryNode, cursor) < 0) {
                 cursor = cursor.left;
             } else {
