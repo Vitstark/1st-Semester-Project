@@ -1,3 +1,4 @@
+import java.lang.instrument.IllegalClassFormatException;
 import java.util.*;
 
 public class TreeMap<K extends Comparable<K>, V> {
@@ -16,14 +17,31 @@ public class TreeMap<K extends Comparable<K>, V> {
 
     public TreeMap(Collection<Node<K, V>> collection) { // Artyom
         // конструктор, добавляющий все элементы из коллекции
+        this();
+        if (collection == null) {
+            throw new RuntimeNullPointerException("collection is null");
+        }
+        for (Node<K, V> node : collection) {
+            put(node.key, node.value);
+        }
     }
 
     public TreeMap(Comparator<K> comparator) { // Artyom
         // конструктор, инициализирующий comparator
+        this();
+        if (comparator == null) {
+            throw new RuntimeNullPointerException("comparator is null");
+        }
+        this.comparator = comparator;
     }
 
     public TreeMap() { // Artyom
         // конструктор по умолчанию
+        this.size = 0;
+        this.root = null;
+        this.comparator = null;
+        this.min = null;
+        this.max = null;
     }
 
     private int compare(Node<K, V> first, Node<K, V> second) {
@@ -101,6 +119,10 @@ public class TreeMap<K extends Comparable<K>, V> {
     }
 
     public V put(K key, V value) {
+        if (key == null) {
+            throw new RuntimeNullPointerException("key can`t be null");
+        }
+
         if (root == null) {
             root = new Node<>(key, value, BLACK);
             size++;
