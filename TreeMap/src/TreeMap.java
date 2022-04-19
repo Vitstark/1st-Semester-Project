@@ -288,13 +288,15 @@ public class TreeMap<K extends Comparable<K>, V> {
         Node<K, V> brother = getBrother(node);
         do {
             brother.color = RED;
+            node.parent.color = BLACK;
             brother = getBrother(node);
         } while (node != null && node.color == BLACK && brother.color == BLACK
                 && brother.left.color == BLACK && brother.right.color == BLACK);
     }
 
     private void balanceIfOutsideNephewISBlack(Node<K,V> node) {
-        Node<K,V> brother = new Node<>()
+        Node<K,V> brother = new Node<>();
+
     }
 
     private void balanceAfterRemove(Node<K, V> node) {
@@ -304,6 +306,7 @@ public class TreeMap<K extends Comparable<K>, V> {
             balanceIfNodeHas3BlackRelatives(node);
             return;
         }
+
 
 
     }
