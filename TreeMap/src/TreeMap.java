@@ -51,73 +51,6 @@ public class TreeMap<K extends Comparable<K>, V> {
         return comparator.compare(first.key, second.key);
     }
 
-    private Node<K, V> getUncle(Node<K, V> node) {
-        Node<K, V> uncle = node.parent.parent;
-        if (uncle.left == node.parent) {
-            uncle = uncle.right;
-        } else {
-            uncle = uncle.left;
-        }
-        return uncle;
-    }
-
-    private void changeColorsOfRelatives(Node<K, V> node) {
-        node.parent.color = BLACK;
-        getUncle(node).color = BLACK;
-        if (node.parent.parent != root) {
-            node.parent.parent.color = RED;
-        }
-    }
-
-    private void turnLeft(Node<K, V> oldRoot) {
-        Node<K, V> newRoot = oldRoot.left;
-        if (oldRoot.parent.left == oldRoot) {
-            oldRoot.parent.left = newRoot;
-        } else {
-            oldRoot.parent.right = newRoot;
-        }
-        newRoot.parent = oldRoot.parent;
-        oldRoot.parent = newRoot;
-
-        oldRoot.left = newRoot.right;
-        oldRoot.left.parent = oldRoot;
-        newRoot.right = oldRoot;
-    }
-
-    private void turnRight(Node<K, V> oldRoot) {
-        Node<K, V> newRoot = oldRoot.right;
-        if (oldRoot.parent.left == oldRoot) {
-            oldRoot.parent.left = newRoot;
-        } else {
-            oldRoot.parent.right = newRoot;
-        }
-        newRoot.parent = oldRoot.parent;
-        oldRoot.parent = newRoot;
-
-        oldRoot.right = newRoot.left;
-        oldRoot.right.left = oldRoot;
-        newRoot.left = oldRoot;
-    }
-
-    private void balanceAfterPut(Node<K, V> node) {
-        if (getUncle(node).color == RED) {
-            do {
-                changeColorsOfRelatives(node);
-                node = node.parent.parent;
-            } while (node.parent.color == RED && getUncle(node).color == RED);
-        } else {
-            if (node.parent == node.parent.parent.left) {
-                turnLeft(node.parent.parent);
-                node.parent.right.color = RED;
-            } else {
-                turnRight(node.parent.parent);
-                node.parent.left.color = RED;
-            }
-            node.parent.color = BLACK;
-        }
-
-    }
-
     public V put(K key, V value) {
         if (key == null) {
             throw new RuntimeNullPointerException("key can`t be null");
@@ -183,6 +116,110 @@ public class TreeMap<K extends Comparable<K>, V> {
         return null;
     }
 
+    private Node<K, V> getUncle(Node<K, V> node) {
+        Node<K, V> uncle = node.parent.parent;
+        if (uncle.left == node.parent) {
+            uncle = uncle.right;
+        } else {
+            uncle = uncle.left;
+        }
+        return uncle;
+    }
+
+    private void changeColorsOfRelatives(Node<K, V> node) {
+        node.parent.color = BLACK;
+        getUncle(node).color = BLACK;
+        if (node.parent.parent != root) {
+            node.parent.parent.color = RED;
+        }
+    }
+
+    private void turnLeft(Node<K, V> oldRoot) {
+        Node<K, V> newRoot = oldRoot.left;
+        if (oldRoot.parent.left == oldRoot) {
+            oldRoot.parent.left = newRoot;
+        } else {
+            oldRoot.parent.right = newRoot;
+        }
+        newRoot.parent = oldRoot.parent;
+        oldRoot.parent = newRoot;
+
+        oldRoot.left = newRoot.right;
+        oldRoot.left.parent = oldRoot;
+        newRoot.right = oldRoot;
+    }
+
+    private void turnRight(Node<K, V> oldRoot) {
+        Node<K, V> newRoot = oldRoot.right;
+        if (oldRoot.parent.left == oldRoot) {
+            oldRoot.parent.left = newRoot;
+        } else {
+            oldRoot.parent.right = newRoot;
+        }
+        newRoot.parent = oldRoot.parent;
+        oldRoot.parent = newRoot;
+
+        oldRoot.right = newRoot.left;
+        oldRoot.right.left = oldRoot;
+        newRoot.left = oldRoot;
+    }
+
+    private void balanceAfterPut(Node<K, V> node) {
+        if (getUncle(node).color == RED) {
+            do {
+                changeColorsOfRelatives(node);
+                node = node.parent.parent;
+            } while (node.parent.color == RED && getUncle(node).color == RED);
+        } else {
+            if (node.parent == node.parent.parent.left) {
+                turnLeft(node.parent.parent);
+                node.parent.right.color = RED;
+            } else {
+                turnRight(node.parent.parent);
+                node.parent.left.color = RED;
+            }
+            node.parent.color = BLACK;
+        }
+    }
+
+    public V remove(K key) {
+        if (root == null) {
+            return null;
+        }
+
+        Node<K, V> cursor = binarySearch(key);
+        if (cursor.equals(LEAVE)) {
+            return null;
+        }
+
+        V value = cursor.value;
+        boolean colorOfDeletedNode = cursor.color;
+        size--;
+
+        if (cursor.equals(root) && size == 1) {
+            root = null;
+            min = null;
+            max = null;
+            return value;
+        }
+
+        if (cursor.left.equals(LEAVE) && cursor.right.equals(LEAVE)) {
+            deleteNodeWithoutKids(cursor);
+        }
+        if (cursor.left.equals(LEAVE) ^ cursor.right.equals(LEAVE)) {
+            deleteNodeWithOneKid(cursor);
+        }
+        if (!cursor.left.equals(LEAVE) && !cursor.right.equals(LEAVE)) {
+            colorOfDeletedNode = deleteNodeWithTwoKids(cursor);
+        }
+
+        if (colorOfDeletedNode == BLACK) {
+            balanceAfterRemove(cursor);
+        }
+
+        return null;
+    }
+
     private void deleteNodeWithoutKids(Node<K,V> node) {
         Node<K, V> parent = node.parent;
         if (node.parent.left == node) {
@@ -239,44 +276,6 @@ public class TreeMap<K extends Comparable<K>, V> {
 
     private void balanceAfterRemove(Node<K, V> node) {
 
-    }
-
-    public V remove(K key) {
-        if (root == null) {
-            return null;
-        }
-
-        Node<K, V> cursor = binarySearch(key);
-        if (cursor.equals(LEAVE)) {
-            return null;
-        }
-
-        V value = cursor.value;
-        boolean colorOfDeletedNode = cursor.color;
-        size--;
-
-        if (cursor.equals(root) && size == 1) {
-            root = null;
-            min = null;
-            max = null;
-            return value;
-        }
-
-        if (cursor.left.equals(LEAVE) && cursor.right.equals(LEAVE)) {
-            deleteNodeWithoutKids(cursor);
-        }
-        if (cursor.left.equals(LEAVE) ^ cursor.right.equals(LEAVE)) {
-            deleteNodeWithOneKid(cursor);
-        }
-        if (!cursor.left.equals(LEAVE) && !cursor.right.equals(LEAVE)) {
-            colorOfDeletedNode = deleteNodeWithTwoKids(cursor);
-        }
-
-        if (colorOfDeletedNode == BLACK) {
-            balanceAfterRemove(cursor);
-        }
-
-        return null;
     }
 
     private Node<K,V> binarySearch(K key) {
