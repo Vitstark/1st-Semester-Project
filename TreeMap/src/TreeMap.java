@@ -126,6 +126,16 @@ public class TreeMap<K extends Comparable<K>, V> {
         return uncle;
     }
 
+    private Node<K, V> getBrother(Node<K, V> node) {
+        Node<K, V> brother = node.parent;
+        if (brother.left == node) {
+            brother = brother.right;
+        } else {
+            brother = brother.left;
+        }
+        return brother;
+    }
+
     private void changeColorsOfRelatives(Node<K, V> node) {
         node.parent.color = BLACK;
         getUncle(node).color = BLACK;
@@ -275,7 +285,9 @@ public class TreeMap<K extends Comparable<K>, V> {
     }
 
     private void balanceAfterRemove(Node<K, V> node) {
+        if (getBrother(node).color == BLACK) {
 
+        }
     }
 
     private Node<K,V> binarySearch(K key) {
