@@ -185,6 +185,43 @@ public class TreeMapTestPut {
     public void testMapWith11ElemCheckParents() {
         assertEquals(treeMapWith11Elem.getRoot(), treeMapWith11Elem.getMin().parent.parent);
         assertEquals(treeMapWith11Elem.getRoot(), treeMapWith11Elem.getMax().parent.parent.parent.parent);
+        assertEquals(treeMapWith11Elem.getRoot(), treeMapWith11Elem.getRoot().left.right.parent.parent);
+        assertEquals(treeMapWith11Elem.getRoot(), treeMapWith11Elem.getRoot().right.right.left.parent.parent.parent);
+        assertEquals(treeMapWith11Elem.getRoot(), treeMapWith11Elem.getRoot().right.left.parent.parent);
+    }
+
+    @Test
+    public void testMapWith11ElemCheckLeaves() {
+        assertEquals(LEAVE, treeMapWith11Elem.getMin().left);
+        assertEquals(LEAVE, treeMapWith11Elem.getMin().right);
+        assertEquals(LEAVE, treeMapWith11Elem.getMax().left);
+        assertEquals(LEAVE, treeMapWith11Elem.getMax().right);
+        assertEquals(LEAVE, treeMapWith11Elem.getRoot().left.right.left);
+        assertEquals(LEAVE, treeMapWith11Elem.getRoot().left.right.right);
+        assertEquals(LEAVE, treeMapWith11Elem.getRoot().right.left.left);
+        assertEquals(LEAVE, treeMapWith11Elem.getRoot().right.left.right);
+        assertEquals(LEAVE, treeMapWith11Elem.getRoot().right.right.left.left);
+        assertEquals(LEAVE, treeMapWith11Elem.getRoot().right.right.left.right);
+        assertEquals(LEAVE, treeMapWith11Elem.getRoot().right.right.right.left.left);
+        assertEquals(LEAVE, treeMapWith11Elem.getRoot().right.right.right.left.right);
+        assertEquals(LEAVE, treeMapWith11Elem.getRoot().right.right.right.right.left);
+        assertEquals(LEAVE, treeMapWith11Elem.getRoot().right.right.right.right.right);
+    }
+
+    @Test
+    public void testMapWith11ElemCheckColors() {
+        assertEquals(BLACK, treeMapWith11Elem.getRoot().color);
+
+        assertEquals(BLACK, treeMapWith11Elem.getRoot().left.color);
+        assertEquals(BLACK, treeMapWith11Elem.getRoot().left.left.color);
+        assertEquals(BLACK, treeMapWith11Elem.getRoot().left.right.color);
+
+        assertEquals(BLACK, treeMapWith11Elem.getRoot().right.color);
+        assertEquals(RED, treeMapWith11Elem.getRoot().right.right.color);
+        assertEquals(BLACK, treeMapWith11Elem.getRoot().right.right.right.color);
+        assertEquals(RED, treeMapWith11Elem.getRoot().right.right.right.right.color);
+        assertEquals(BLACK, treeMapWith11Elem.getRoot().right.left.color);
+        assertEquals(BLACK, treeMapWith11Elem.getRoot().right.right.left.color);
     }
 
 }
