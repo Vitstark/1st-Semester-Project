@@ -146,10 +146,14 @@ public class TreeMap<K extends Comparable<K>, V> {
 
     private void turnLeft(Node<K, V> oldRoot) {
         Node<K, V> newRoot = oldRoot.left;
-        if (oldRoot.parent.left == oldRoot) {
-            oldRoot.parent.left = newRoot;
+        if (oldRoot != root) {
+            if (oldRoot.parent.left == oldRoot) {
+                oldRoot.parent.left = newRoot;
+            } else {
+                oldRoot.parent.right = newRoot;
+            }
         } else {
-            oldRoot.parent.right = newRoot;
+            root = newRoot;
         }
         newRoot.parent = oldRoot.parent;
         oldRoot.parent = newRoot;
@@ -161,16 +165,20 @@ public class TreeMap<K extends Comparable<K>, V> {
 
     private void turnRight(Node<K, V> oldRoot) {
         Node<K, V> newRoot = oldRoot.right;
-        if (oldRoot.parent.left == oldRoot) {
-            oldRoot.parent.left = newRoot;
+        if (oldRoot != root) {
+            if (oldRoot.parent.left == oldRoot) {
+                oldRoot.parent.left = newRoot;
+            } else {
+                oldRoot.parent.right = newRoot;
+            }
         } else {
-            oldRoot.parent.right = newRoot;
+            root = newRoot;
         }
         newRoot.parent = oldRoot.parent;
         oldRoot.parent = newRoot;
 
         oldRoot.right = newRoot.left;
-        oldRoot.right.left = oldRoot;
+        oldRoot.right.parent = oldRoot;
         newRoot.left = oldRoot;
     }
 
