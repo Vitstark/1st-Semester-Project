@@ -1,4 +1,3 @@
-import java.lang.instrument.IllegalClassFormatException;
 import java.util.*;
 
 public class TreeMap<K extends Comparable<K>, V> {
@@ -51,7 +50,7 @@ public class TreeMap<K extends Comparable<K>, V> {
         return comparator.compare(first.key, second.key);
     }
 
-    public V put(K key, V value) {
+    public V put(K key, V value) { // Vitalii
         if (key == null) {
             throw new RuntimeNullPointerException("key can`t be null");
         }
@@ -146,10 +145,14 @@ public class TreeMap<K extends Comparable<K>, V> {
 
     private void turnLeft(Node<K, V> oldRoot) {
         Node<K, V> newRoot = oldRoot.left;
-        if (oldRoot.parent.left == oldRoot) {
-            oldRoot.parent.left = newRoot;
+        if (oldRoot != root) {
+            if (oldRoot.parent.left == oldRoot) {
+                oldRoot.parent.left = newRoot;
+            } else {
+                oldRoot.parent.right = newRoot;
+            }
         } else {
-            oldRoot.parent.right = newRoot;
+            root = newRoot;
         }
         newRoot.parent = oldRoot.parent;
         oldRoot.parent = newRoot;
@@ -161,16 +164,20 @@ public class TreeMap<K extends Comparable<K>, V> {
 
     private void turnRight(Node<K, V> oldRoot) {
         Node<K, V> newRoot = oldRoot.right;
-        if (oldRoot.parent.left == oldRoot) {
-            oldRoot.parent.left = newRoot;
+        if (oldRoot != root) {
+            if (oldRoot.parent.left == oldRoot) {
+                oldRoot.parent.left = newRoot;
+            } else {
+                oldRoot.parent.right = newRoot;
+            }
         } else {
-            oldRoot.parent.right = newRoot;
+            root = newRoot;
         }
         newRoot.parent = oldRoot.parent;
         oldRoot.parent = newRoot;
 
         oldRoot.right = newRoot.left;
-        oldRoot.right.left = oldRoot;
+        oldRoot.right.parent = oldRoot;
         newRoot.left = oldRoot;
     }
 
@@ -179,8 +186,9 @@ public class TreeMap<K extends Comparable<K>, V> {
             do {
                 changeColorsOfRelatives(node);
                 node = node.parent.parent;
-            } while (node.parent.color == RED && getUncle(node).color == RED);
-        } else {
+            } while (node.color == RED && node.parent.color == RED && getUncle(node).color == RED);
+        }
+        if (node.color == RED && node.parent.color == RED && getUncle(node).color == BLACK) {
             if (node.parent == node.parent.parent.left) {
                 turnLeft(node.parent.parent);
                 node.parent.right.color = RED;
@@ -192,7 +200,7 @@ public class TreeMap<K extends Comparable<K>, V> {
         }
     }
 
-    public V remove(K key) {
+    public V remove(K key) { // Vitalii
         if (root == null) {
             return null;
         }

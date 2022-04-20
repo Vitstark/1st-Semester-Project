@@ -1,4 +1,5 @@
 import org.junit.*;
+
 import static org.junit.Assert.*;
 
 public class TreeMapTestPut {
@@ -6,14 +7,20 @@ public class TreeMapTestPut {
     public static TreeMap<Integer, Integer> emptyTreeMap;
     public static TreeMap<Integer, Integer> treeMapWithThreeElem;
     public static TreeMap<Integer, Integer> treeMapWithComparator;
+    public static TreeMap<Integer, Integer> treeMapWith11Elem;
+    public static TreeMap<Integer, Integer> treeMapWithThreeElemAfterRightTurn;
+    public static TreeMap<Integer, Integer> treeMapWithThreeElemAfterLeftTurn;
+    public static boolean BLACK = true;
+    public static boolean RED = false;
+    public static TreeMap.Node<Integer,Integer> LEAVE = new TreeMap.Node<>(null, null, BLACK);
 
     @Before
     public void init() {
         emptyTreeMap = new TreeMap<>();
         treeMapWithThreeElem = new TreeMap<>();
-        treeMapWithThreeElem.put(2, 12);
-        treeMapWithThreeElem.put(1, 10);
-        treeMapWithThreeElem.put(3, 10);
+        treeMapWith11Elem = new TreeMap<>();
+        treeMapWithThreeElemAfterRightTurn = new TreeMap<>();
+        treeMapWithThreeElemAfterLeftTurn = new TreeMap<>();
         treeMapWithComparator = new TreeMap<>((x, y) -> {
             int first = Math.abs(x.intValue());
             int second = Math.abs(y.intValue());
@@ -29,6 +36,19 @@ public class TreeMapTestPut {
             }
             return length1 - length2;
         });
+
+        treeMapWithThreeElem.put(2, 12);
+        treeMapWithThreeElem.put(1, 10);
+        treeMapWithThreeElem.put(3, 10);
+
+        for (Integer i = 0; i < 3; i++) {
+            treeMapWithThreeElemAfterRightTurn.put(i, i);
+            treeMapWithThreeElemAfterLeftTurn.put(-i, i);
+        }
+
+        for (Integer i = 1; i < 12; i++) {
+            treeMapWith11Elem.put(i, 0);
+        }
     }
 
     @Test
@@ -45,7 +65,7 @@ public class TreeMapTestPut {
         assertEquals(null, treeMapWithComparator.getRoot());
         assertEquals(null, treeMapWithComparator.getMax());
         assertEquals(null, treeMapWithComparator.getMin());
-        assertEquals(null, treeMapWithComparator.getComparator());
+        assertNotEquals(null, treeMapWithComparator.getComparator());
     }
 
     @Test
@@ -58,7 +78,7 @@ public class TreeMapTestPut {
     }
 
     @Test
-    public void testMultiplyPutCheckMaxMin() {
+    public void testThreePutCheckMaxMin() {
         assertEquals(3, treeMapWithThreeElem.size());
         assertEquals(new TreeMap.Node<>(3, 10), treeMapWithThreeElem.getMax());
         assertEquals(new TreeMap.Node<>(1, 10), treeMapWithThreeElem.getMin());
@@ -66,27 +86,105 @@ public class TreeMapTestPut {
     }
 
     @Test
-    public void testMultiplyPutCheckParents() {
+    public void testThreePutCheckParents() {
         assertEquals(treeMapWithThreeElem.getRoot(), treeMapWithThreeElem.getMax().parent);
-        assertEquals(treeMapWithThreeElem.getRoot(), treeMapWithThreeElem.getMin().parent);;
+        assertEquals(treeMapWithThreeElem.getRoot(), treeMapWithThreeElem.getMin().parent);
+        ;
     }
 
     @Test
-    public void testMultiplyPutCheckKids() {
+    public void testThreePutCheckKids() {
         assertEquals(treeMapWithThreeElem.getMin(), treeMapWithThreeElem.getRoot().left);
         assertEquals(treeMapWithThreeElem.getMax(), treeMapWithThreeElem.getRoot().right);
     }
 
     @Test
-    public void testMultiplyPutCheckLeaves() {
+    public void testThreePutCheckLeaves() {
         assertEquals(treeMapWithThreeElem.getMin().left, new TreeMap.Node<>(treeMapWithThreeElem.getMin()));
         assertEquals(treeMapWithThreeElem.getMin().right, new TreeMap.Node<>(treeMapWithThreeElem.getMin()));
     }
 
     @Test
-    public void testMultiplyPutCheckColors() {
-        assertEquals(treeMapWithThreeElem.getRoot().color, true);
-        assertEquals(treeMapWithThreeElem.getMin().color, false);
-        assertEquals(treeMapWithThreeElem.getMax().color, false);
+    public void testThreePutCheckColors() {
+        assertEquals(treeMapWithThreeElem.getRoot().color, BLACK);
+        assertEquals(treeMapWithThreeElem.getMin().color, RED);
+        assertEquals(treeMapWithThreeElem.getMax().color, RED);
     }
+
+    @Test
+    public void testMapAfterTurnCheckMaxMin() {
+        assertEquals(new TreeMap.Node(0, 0), treeMapWithThreeElemAfterRightTurn.getMin());
+        assertEquals(new TreeMap.Node(2, 2), treeMapWithThreeElemAfterRightTurn.getMax());
+        assertEquals(new TreeMap.Node(0, 0), treeMapWithThreeElemAfterLeftTurn.getMax());
+        assertEquals(new TreeMap.Node(-2, 2), treeMapWithThreeElemAfterLeftTurn.getMin());
+    }
+
+    @Test
+    public void testMapAfterTurnCheckHierarchy() {
+        assertEquals(new TreeMap.Node(1, 1), treeMapWithThreeElemAfterRightTurn.getRoot());
+        assertEquals(new TreeMap.Node(-1, 1), treeMapWithThreeElemAfterLeftTurn.getRoot());
+        assertEquals(new TreeMap.Node(0, 0), treeMapWithThreeElemAfterRightTurn.getRoot().left);
+        assertEquals(new TreeMap.Node(-2, 2), treeMapWithThreeElemAfterLeftTurn.getRoot().left);
+        assertEquals(new TreeMap.Node(2, 2), treeMapWithThreeElemAfterRightTurn.getRoot().right);
+        assertEquals(new TreeMap.Node(0, 0) ,treeMapWithThreeElemAfterLeftTurn.getRoot().right);
+    }
+
+    @Test
+    public void testMapAfterTurnCheckColors() {
+        assertEquals(BLACK, treeMapWithThreeElemAfterLeftTurn.getRoot().color);
+        assertEquals(BLACK, treeMapWithThreeElemAfterRightTurn.getRoot().color);
+        assertEquals(RED, treeMapWithThreeElemAfterLeftTurn.getRoot().left.color);
+        assertEquals(RED, treeMapWithThreeElemAfterRightTurn.getRoot().left.color);
+        assertEquals(RED, treeMapWithThreeElemAfterLeftTurn.getRoot().right.color);
+        assertEquals(RED, treeMapWithThreeElemAfterRightTurn.getRoot().right.color);
+    }
+
+    @Test
+    public void testMapAfterTurnCheckParents() {
+        assertEquals(treeMapWithThreeElemAfterLeftTurn.getRoot(), treeMapWithThreeElemAfterLeftTurn.getMin().parent);
+        assertEquals(treeMapWithThreeElemAfterLeftTurn.getRoot(), treeMapWithThreeElemAfterLeftTurn.getMax().parent);
+        assertEquals(treeMapWithThreeElemAfterRightTurn.getRoot(), treeMapWithThreeElemAfterRightTurn.getMin().parent);
+        assertEquals(treeMapWithThreeElemAfterRightTurn.getRoot(), treeMapWithThreeElemAfterRightTurn.getMax().parent);
+    }
+
+    @Test
+    public void testMapAfterTurnCheckLeaves() {
+        assertEquals(treeMapWithThreeElemAfterLeftTurn.getMin().left, LEAVE);
+        assertEquals(treeMapWithThreeElemAfterLeftTurn.getMin().right, LEAVE);
+        assertEquals(treeMapWithThreeElemAfterLeftTurn.getMax().left, LEAVE);
+        assertEquals(treeMapWithThreeElemAfterLeftTurn.getMax().right, LEAVE);
+
+        assertEquals(treeMapWithThreeElemAfterLeftTurn.getMin().left.parent, treeMapWithThreeElemAfterLeftTurn.getMin());
+        assertEquals(treeMapWithThreeElemAfterLeftTurn.getMin().right.parent, treeMapWithThreeElemAfterLeftTurn.getMin());
+        assertEquals(treeMapWithThreeElemAfterLeftTurn.getMax().left.parent, treeMapWithThreeElemAfterLeftTurn.getMax());
+        assertEquals(treeMapWithThreeElemAfterLeftTurn.getMax().right.parent, treeMapWithThreeElemAfterLeftTurn.getMax());
+
+        assertEquals(treeMapWithThreeElemAfterRightTurn.getMin().left, LEAVE);
+        assertEquals(treeMapWithThreeElemAfterRightTurn.getMin().right, LEAVE);
+        assertEquals(treeMapWithThreeElemAfterRightTurn.getMax().left, LEAVE);
+        assertEquals(treeMapWithThreeElemAfterRightTurn.getMax().right, LEAVE);
+
+        assertEquals(treeMapWithThreeElemAfterRightTurn.getMin().left.parent, treeMapWithThreeElemAfterRightTurn.getMin());
+        assertEquals(treeMapWithThreeElemAfterRightTurn.getMin().right.parent, treeMapWithThreeElemAfterRightTurn.getMin());
+        assertEquals(treeMapWithThreeElemAfterRightTurn.getMax().left.parent, treeMapWithThreeElemAfterRightTurn.getMax());
+        assertEquals(treeMapWithThreeElemAfterRightTurn.getMax().right.parent, treeMapWithThreeElemAfterRightTurn.getMax());
+    }
+
+    @Test
+    public void testMapWith11ElemCheckRoot() {
+        assertEquals(new TreeMap.Node<>(4, 0), treeMapWith11Elem.getRoot());
+    }
+
+    @Test
+    public void testMapWith11ElemCheckMaxMin() {
+        assertEquals(new TreeMap.Node<>(1, 0), treeMapWith11Elem.getMin());
+        assertEquals(new TreeMap.Node<>(11, 0), treeMapWith11Elem.getMax());
+    }
+
+    @Test
+    public void testMapWith11ElemCheckParents() {
+        assertEquals(treeMapWith11Elem.getRoot(), treeMapWith11Elem.getMin().parent.parent);
+        assertEquals(treeMapWith11Elem.getRoot(), treeMapWith11Elem.getMax().parent.parent.parent.parent);
+    }
+
 }
