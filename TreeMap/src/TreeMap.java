@@ -395,13 +395,63 @@ public class TreeMap<K extends Comparable<K>, V> {
     }
 
     public V get(K key) {
-        return null;
-    } // Danya
 
-    // можно использовать binarySearch()
+        Node<K,V> n = root;
+
+        while (n != LEAVE){
+
+            int cKeyVal = key.compareTo(n.key);
+
+            if (cKeyVal == 0){
+
+                return n.value;
+
+            }
+            if (cKeyVal > 0){
+
+                n = n.right;
+
+            }
+            if (cKeyVal < 0){
+
+                n = n.left;
+
+            }
+
+        }
+
+        return null;
+
+    }
 
     public boolean containsKey(K key) {
+
+        Node<K, V> cursor = root;
+
+        while (cursor != LEAVE){
+
+                int cKeyVal = cursor.key.compareTo(key);
+
+                if (cKeyVal == 0){
+
+                    return true;
+
+                }
+                if (cKeyVal > 0){
+
+                    cursor = cursor.right;
+
+                }
+                if (cKeyVal < 0){
+
+                    cursor = cursor.left;
+
+                }
+
+            }
+
         return false;
+
     } // Danya
 
     public Collection<V> values() { // Long
