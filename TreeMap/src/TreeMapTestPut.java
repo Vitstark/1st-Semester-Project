@@ -4,15 +4,15 @@ import static org.junit.Assert.*;
 
 public class TreeMapTestPut {
 
-    public static TreeMap<Integer, Integer> emptyTreeMap;
-    public static TreeMap<Integer, Integer> treeMapWithThreeElem;
-    public static TreeMap<Integer, Integer> treeMapWithComparator;
-    public static TreeMap<Integer, Integer> treeMapWith11Elem;
-    public static TreeMap<Integer, Integer> treeMapWithThreeElemAfterRightTurn;
-    public static TreeMap<Integer, Integer> treeMapWithThreeElemAfterLeftTurn;
-    public static boolean BLACK = true;
-    public static boolean RED = false;
-    public static TreeMap.Node<Integer,Integer> LEAVE = new TreeMap.Node<>(null, null, BLACK);
+    private static TreeMap<Integer, Integer> emptyTreeMap;
+    private static TreeMap<Integer, Integer> treeMapWithThreeElem;
+    private static TreeMap<Integer, Integer> treeMapWithComparator;
+    private static TreeMap<Integer, Integer> treeMapWith11Elem;
+    private static TreeMap<Integer, Integer> treeMapWithThreeElemAfterRightTurn;
+    private static TreeMap<Integer, Integer> treeMapWithThreeElemAfterLeftTurn;
+    private static boolean BLACK = true;
+    private static boolean RED = false;
+    private static TreeMap.Node<Integer,Integer> LEAVE = new TreeMap.Node<>(null, null, BLACK);
 
     @Before
     public void init() {
@@ -173,6 +173,7 @@ public class TreeMapTestPut {
     @Test
     public void testMapWith11ElemCheckRoot() {
         assertEquals(new TreeMap.Node<>(4, 0), treeMapWith11Elem.getRoot());
+        assertEquals(11, treeMapWith11Elem.size());
     }
 
     @Test
@@ -223,5 +224,4 @@ public class TreeMapTestPut {
         assertEquals(BLACK, treeMapWith11Elem.getRoot().right.left.color);
         assertEquals(BLACK, treeMapWith11Elem.getRoot().right.right.left.color);
     }
-
 }
