@@ -400,7 +400,7 @@ public class TreeMap<K extends Comparable<K>, V> {
 
         while (n != LEAVE){
 
-            int cKeyVal = key.compareTo(n.key);
+            int cKeyVal = compare(n, new Node<>(key, null));
 
             if (cKeyVal == 0){
 
@@ -430,7 +430,7 @@ public class TreeMap<K extends Comparable<K>, V> {
 
         while (cursor != LEAVE){
 
-                int cKeyVal = cursor.key.compareTo(key);
+                int cKeyVal = compare(cursor, new Node<>(key, null));
 
                 if (cKeyVal == 0){
 
