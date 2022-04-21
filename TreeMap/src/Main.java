@@ -27,5 +27,12 @@ class MyComparator implements Comparator<String> {
 public class Main {
 
     public static void main(String[] args) {
+        TreeMap<Integer, Integer> map = new TreeMap<>();
+
+        for (Integer i = 1; i < 12; i++) {
+            map.put(i,i);
+        }
+
+        System.out.println(map);
     }
 }
