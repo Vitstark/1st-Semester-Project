@@ -1,6 +1,6 @@
 import java.util.Comparator;
-import java.util.Map;
-import java.util.TreeMap;
+import java.util.LinkedList;
+import java.util.List;
 
 class MyComparator implements Comparator<String> {
     @Override
@@ -9,15 +9,23 @@ class MyComparator implements Comparator<String> {
     }
 }
 
+/*
+    2        8
+   / \      /
+  1   3    4
+
+    2                 2                     2
+   / \               / \                   / \
+  1   3             1   3                 1   3
+       \                 \                     \
+        4                 4
+                           \
+                            8
+ */
+
+
 public class Main {
 
     public static void main(String[] args) {
-        TreeMap<String, String> treeMap = new TreeMap<>(new MyComparator());
-        for (Integer i = 5; i < 25; i++) {
-            treeMap.put(i.toString(), i.toString());
-        }
-
-        System.out.println(treeMap);
-
     }
 }
