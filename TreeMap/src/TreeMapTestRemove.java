@@ -53,7 +53,8 @@ public class TreeMapTestRemove {
         assertEquals(new TreeMap.Node(1, 1), treeMapWith3ElemForDeleteRightNode.getMin());
         assertEquals(new TreeMap.Node(2, 2), treeMapWith3ElemForDeleteRightNode.getMax());
 
-        assertEquals(treeMapWith3ElemForDeleteRightNode.getRoot(), treeMapWith3ElemForDeleteLeftNode.getRoot().right.parent);
+        assertEquals(treeMapWith3ElemForDeleteRightNode.getRoot(),
+                treeMapWith3ElemForDeleteLeftNode.getRoot().right.parent);
     }
 
     @Test
@@ -70,7 +71,8 @@ public class TreeMapTestRemove {
         assertEquals(new TreeMap.Node(2, 2), treeMapWith3ElemForDeleteLeftNode.getMin());
         assertEquals(new TreeMap.Node(3, 3), treeMapWith3ElemForDeleteLeftNode.getMax());
 
-        assertEquals(treeMapWith3ElemForDeleteLeftNode.getRoot(), treeMapWith3ElemForDeleteLeftNode.getRoot().left.parent);
+        assertEquals(treeMapWith3ElemForDeleteLeftNode.getRoot(),
+                treeMapWith3ElemForDeleteLeftNode.getRoot().left.parent);
     }
 
     @Test
@@ -87,7 +89,8 @@ public class TreeMapTestRemove {
         assertEquals(new TreeMap.Node(1, 1), treeMapWith3ElemForDeleteRoot.getMin());
         assertEquals(new TreeMap.Node(3, 3), treeMapWith3ElemForDeleteRoot.getMax());
 
-        assertEquals(treeMapWith3ElemForDeleteRoot.getRoot(), treeMapWith3ElemForDeleteRoot.getRoot().right.parent);
+        assertEquals(treeMapWith3ElemForDeleteRoot.getRoot(),
+                treeMapWith3ElemForDeleteRoot.getRoot().right.parent);
     }
 
     @Test
@@ -99,7 +102,23 @@ public class TreeMapTestRemove {
         assertEquals(new TreeMap.Node(11, 11), treeMapWith11Elem.getRoot().right.right.right);
         assertEquals(new TreeMap.Node(8, 8), treeMapWith11Elem.getRoot().right.right.left);
         assertEquals(new TreeMap.Node(9, 9), treeMapWith11Elem.getRoot().right.right.left.right);
+
+        assertEquals(BLACK, treeMapWith11Elem.getRoot().color);
+        assertEquals(BLACK, treeMapWith11Elem.getRoot().right.color);
+        assertEquals(BLACK, treeMapWith11Elem.getRoot().right.left.color);
+        assertEquals(RED, treeMapWith11Elem.getRoot().right.right.color);
+        assertEquals(BLACK, treeMapWith11Elem.getRoot().right.right.left.color);
+        assertEquals(BLACK, treeMapWith11Elem.getRoot().right.right.right.color);
+        assertEquals(RED, treeMapWith11Elem.getRoot().right.right.left.right.color);
+
+        assertEquals(treeMapWith11Elem.getRoot(), treeMapWith11Elem.getMax().parent.parent.parent);
+        assertEquals(treeMapWith11Elem.getRoot(),
+                treeMapWith11Elem.getRoot().right.right.left.right.parent.parent.parent.parent);
+
+
     }
+
+
 
 
 }
