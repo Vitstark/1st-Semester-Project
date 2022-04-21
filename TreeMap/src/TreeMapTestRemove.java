@@ -8,8 +8,9 @@ public class TreeMapTestRemove {
     private static TreeMap<Integer, Integer> treeMapWith3ElemForDeleteRightNode;
     private static TreeMap<Integer, Integer> treeMapWith3ElemForDeleteLeftNode;
     private static TreeMap<Integer, Integer> treeMapWith3ElemForDeleteRoot;
-    private static TreeMap<Integer, Integer> treeMapWith11ElemFor;
-    private static TreeMap<Integer, Integer> treeMapWith11Elem;
+    private static TreeMap<Integer, Integer> treeMapWith11ElemFor1Delete;
+    private static TreeMap<Integer, Integer> treeMapWith11ElemFor2Delete;
+    private static TreeMap<Integer, Integer> treeMapWith11ElemFor3Delete;
     private static boolean BLACK = true;
     private static boolean RED = false;
     private static TreeMap.Node<Integer,Integer> LEAVE = new TreeMap.Node<>(null, null, BLACK);
@@ -20,7 +21,9 @@ public class TreeMapTestRemove {
         treeMapWith3ElemForDeleteRightNode = new TreeMap<>();
         treeMapWith3ElemForDeleteLeftNode = new TreeMap<>();
         treeMapWith3ElemForDeleteRoot = new TreeMap<>();
-        treeMapWith11Elem = new TreeMap<>();
+        treeMapWith11ElemFor1Delete = new TreeMap<>();
+        treeMapWith11ElemFor2Delete = new TreeMap<>();
+        treeMapWith11ElemFor3Delete = new TreeMap<>();
 
         for (Integer i = 1; i < 4; i++) {
             treeMapWith3ElemForDeleteRoot.put(i, i);
@@ -29,7 +32,9 @@ public class TreeMapTestRemove {
         }
 
         for (Integer i = 1; i < 12; i++) {
-            treeMapWith11Elem.put(i, i);
+            treeMapWith11ElemFor1Delete.put(i, i);
+            treeMapWith11ElemFor2Delete.put(i, i);
+            treeMapWith11ElemFor3Delete.put(i, i);
         }
     }
 
@@ -94,29 +99,71 @@ public class TreeMapTestRemove {
     }
 
     @Test
-    public void testMapWith11Elements() {
-        assertEquals(Integer.valueOf(7), treeMapWith11Elem.remove(7));
-        assertEquals(10, treeMapWith11Elem.size());
+    public void testMapWith11Elements1Remove() {
+        assertEquals(Integer.valueOf(7), treeMapWith11ElemFor1Delete.remove(7));
+        assertEquals(10, treeMapWith11ElemFor1Delete.size());
 
-        assertEquals(new TreeMap.Node(10, 10), treeMapWith11Elem.getRoot().right.right);
-        assertEquals(new TreeMap.Node(11, 11), treeMapWith11Elem.getRoot().right.right.right);
-        assertEquals(new TreeMap.Node(8, 8), treeMapWith11Elem.getRoot().right.right.left);
-        assertEquals(new TreeMap.Node(9, 9), treeMapWith11Elem.getRoot().right.right.left.right);
+        assertEquals(new TreeMap.Node(10, 10), treeMapWith11ElemFor1Delete.getRoot().right.right);
+        assertEquals(new TreeMap.Node(11, 11), treeMapWith11ElemFor1Delete.getRoot().right.right.right);
+        assertEquals(new TreeMap.Node(8, 8), treeMapWith11ElemFor1Delete.getRoot().right.right.left);
+        assertEquals(new TreeMap.Node(9, 9), treeMapWith11ElemFor1Delete.getRoot().right.right.left.right);
+        assertEquals(LEAVE, treeMapWith11ElemFor1Delete.getRoot().right.right.left.left);
 
-        assertEquals(BLACK, treeMapWith11Elem.getRoot().color);
-        assertEquals(BLACK, treeMapWith11Elem.getRoot().right.color);
-        assertEquals(BLACK, treeMapWith11Elem.getRoot().right.left.color);
-        assertEquals(RED, treeMapWith11Elem.getRoot().right.right.color);
-        assertEquals(BLACK, treeMapWith11Elem.getRoot().right.right.left.color);
-        assertEquals(BLACK, treeMapWith11Elem.getRoot().right.right.right.color);
-        assertEquals(RED, treeMapWith11Elem.getRoot().right.right.left.right.color);
+        assertEquals(BLACK, treeMapWith11ElemFor1Delete.getRoot().color);
+        assertEquals(BLACK, treeMapWith11ElemFor1Delete.getRoot().right.color);
+        assertEquals(BLACK, treeMapWith11ElemFor1Delete.getRoot().right.left.color);
+        assertEquals(RED, treeMapWith11ElemFor1Delete.getRoot().right.right.color);
+        assertEquals(BLACK, treeMapWith11ElemFor1Delete.getRoot().right.right.left.color);
+        assertEquals(BLACK, treeMapWith11ElemFor1Delete.getRoot().right.right.right.color);
+        assertEquals(RED, treeMapWith11ElemFor1Delete.getRoot().right.right.left.right.color);
 
-        assertEquals(treeMapWith11Elem.getRoot(), treeMapWith11Elem.getMax().parent.parent.parent);
-        assertEquals(treeMapWith11Elem.getRoot(),
-                treeMapWith11Elem.getRoot().right.right.left.right.parent.parent.parent.parent);
-
-
+        assertEquals(treeMapWith11ElemFor1Delete.getRoot(), treeMapWith11ElemFor1Delete.getMax().parent.parent.parent);
+        assertEquals(treeMapWith11ElemFor1Delete.getRoot(),
+                treeMapWith11ElemFor1Delete.getRoot().right.right.left.right.parent.parent.parent.parent);
     }
+
+    @Test
+    public void testMapWith11Elements2Remove() {
+        assertEquals(Integer.valueOf(7), treeMapWith11ElemFor2Delete.remove(7));
+        assertEquals( Integer.valueOf(8), treeMapWith11ElemFor2Delete.remove(8));
+        assertEquals(9, treeMapWith11ElemFor2Delete.size());
+
+        assertEquals(new TreeMap.Node(10, 10), treeMapWith11ElemFor2Delete.getRoot().right.right);
+        assertEquals(new TreeMap.Node(11, 11), treeMapWith11ElemFor2Delete.getRoot().right.right.right);
+        assertEquals(new TreeMap.Node(9, 9), treeMapWith11ElemFor2Delete.getRoot().right.right.left);
+
+        assertEquals(BLACK, treeMapWith11ElemFor2Delete.getRoot().right.left.color);
+        assertEquals(RED, treeMapWith11ElemFor2Delete.getRoot().right.right.color);
+        assertEquals(BLACK, treeMapWith11ElemFor2Delete.getRoot().right.right.left.color);
+        assertEquals(BLACK, treeMapWith11ElemFor2Delete.getRoot().right.right.right.color);
+
+        assertEquals(treeMapWith11ElemFor2Delete.getRoot(),
+                treeMapWith11ElemFor2Delete.getRoot().right.right.left.parent.parent.parent);
+    }
+
+    @Test
+    public void testMapWith11Elements3Remove() {
+        assertEquals(Integer.valueOf(7), treeMapWith11ElemFor3Delete.remove(7));
+        assertEquals(Integer.valueOf(8), treeMapWith11ElemFor3Delete.remove(8));
+        assertEquals(Integer.valueOf(5), treeMapWith11ElemFor3Delete.remove(5));
+        assertEquals(8, treeMapWith11ElemFor3Delete.size());
+
+        assertEquals(new TreeMap.Node(10, 10), treeMapWith11ElemFor3Delete.getRoot().right);
+        assertEquals(new TreeMap.Node(11, 11), treeMapWith11ElemFor3Delete.getRoot().right.right);
+        assertEquals(new TreeMap.Node(6, 6), treeMapWith11ElemFor3Delete.getRoot().right.left);
+        assertEquals(new TreeMap.Node(9, 9), treeMapWith11ElemFor3Delete.getRoot().right.left.right);
+
+        assertEquals(BLACK, treeMapWith11ElemFor3Delete.getRoot().right.color);
+        assertEquals(BLACK, treeMapWith11ElemFor3Delete.getRoot().right.right.color);
+        assertEquals(BLACK, treeMapWith11ElemFor3Delete.getRoot().right.left.color);
+        assertEquals(RED, treeMapWith11ElemFor3Delete.getRoot().right.left.right.color);
+
+        assertEquals(treeMapWith11ElemFor3Delete.getRoot(),
+                treeMapWith11ElemFor3Delete.getRoot().right.left.right.parent.parent.parent);
+        assertEquals(treeMapWith11ElemFor3Delete.getRoot(),
+                treeMapWith11ElemFor3Delete.getRoot().right.right.parent.parent);
+    }
+
 
 
 

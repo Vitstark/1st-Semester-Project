@@ -242,6 +242,7 @@ public class TreeMap<K extends Comparable<K>, V> {
         }
         if (!cursor.equals(LEAVE) && (cursor.left.equals(LEAVE) ^ cursor.right.equals(LEAVE))) {
             cursor = deleteNodeWithOneKid(cursor);
+            return value;
         }
         if (!cursor.equals(LEAVE) && (!cursor.left.equals(LEAVE) && !cursor.right.equals(LEAVE))) {
             colorOfDeletedNode = deleteNodeWithTwoKids(cursor);
@@ -368,7 +369,7 @@ public class TreeMap<K extends Comparable<K>, V> {
                 turnLeft(node.parent);
 
             }
-            brother.color = RED;
+            brother.color = BLACK;
             node.parent.color = RED;
         }
 
