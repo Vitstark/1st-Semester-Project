@@ -206,7 +206,7 @@ public class TreeMap<K extends Comparable<K>, V> {
         }
 
         Node<K, V> cursor = binarySearch(key);
-        if (cursor == null) {
+        if (cursor.equals(LEAVE)) {
             return null;
         }
 
@@ -214,20 +214,37 @@ public class TreeMap<K extends Comparable<K>, V> {
         boolean colorOfDeletedNode = cursor.color;
         size--;
 
-        if (cursor.equals(root) && size == 1) {
+        if (cursor.equals(root) && size == 0) {
             root = null;
             min = null;
             max = null;
             return value;
         }
 
+        if (cursor == max) {
+            if (cursor == root) {
+                max = max.left;
+            } else {
+                max = max.parent;
+            }
+        }
+
+        if (cursor == min) {
+            if (cursor == root) {
+                min = min.right;
+            } else {
+                min = min.parent;
+            }
+        }
+
         if (cursor.left.equals(LEAVE) && cursor.right.equals(LEAVE)) {
-            deleteNodeWithoutKids(cursor);
+            cursor = deleteNodeWithoutKids(cursor);
         }
-        if (cursor.left.equals(LEAVE) ^ cursor.right.equals(LEAVE)) {
+        if (!cursor.equals(LEAVE) && (cursor.left.equals(LEAVE) ^ cursor.right.equals(LEAVE))) {
             deleteNodeWithOneKid(cursor);
+            return value;
         }
-        if (!cursor.left.equals(LEAVE) && !cursor.right.equals(LEAVE)) {
+        if (!cursor.equals(LEAVE) && (!cursor.left.equals(LEAVE) && !cursor.right.equals(LEAVE))) {
             colorOfDeletedNode = deleteNodeWithTwoKids(cursor);
         }
 
@@ -235,10 +252,10 @@ public class TreeMap<K extends Comparable<K>, V> {
             balanceAfterRemove(cursor);
         }
 
-        return null;
+        return value;
     }
 
-    private void deleteNodeWithoutKids(Node<K, V> node) {
+    private Node<K,V> deleteNodeWithoutKids(Node<K, V> node) {
         Node<K, V> parent = node.parent;
         if (node.parent.left == node) {
             parent.left = new Node(parent);
@@ -247,6 +264,7 @@ public class TreeMap<K extends Comparable<K>, V> {
             parent.right = new Node(parent);
             node = parent.right;
         }
+        return node;
     }
 
     private void deleteNodeWithOneKid(Node<K, V> node) {
@@ -284,11 +302,10 @@ public class TreeMap<K extends Comparable<K>, V> {
 
         boolean colorOfDeletedNode = nearestNode.color;
         if (nearestNode.right.equals(LEAVE)) {
-            deleteNodeWithoutKids(nearestNode);
+            node = deleteNodeWithoutKids(nearestNode);
         } else {
             deleteNodeWithOneKid(nearestNode);
         }
-        node = nearestNode;
         return colorOfDeletedNode;
     }
 
@@ -350,10 +367,11 @@ public class TreeMap<K extends Comparable<K>, V> {
                 turnLeft(node.parent);
 
             }
-            brother.color = RED;
+            brother.color = BLACK;
             node.parent.color = RED;
         }
 
+        brother = getBrother(node);
         if (brother.color == BLACK && brother.left.color == BLACK
                 && brother.right.color == BLACK) {
             balanceIfNodeHas3BlackRelatives(node);
@@ -380,7 +398,7 @@ public class TreeMap<K extends Comparable<K>, V> {
     private Node<K, V> binarySearch(K key) {
         Node<K, V> cursor = root;
         Node<K, V> necessaryNode = new Node(key, null);
-        while (cursor != null && !cursor.key.equals(key)) {
+        while (!cursor.equals(LEAVE) && !cursor.key.equals(key)) {
             if (compare(necessaryNode, cursor) < 0) {
                 cursor = cursor.left;
             } else {
