@@ -393,7 +393,6 @@ public class TreeMap<K extends Comparable<K>, V> {
                 }
             }
         }
-
     }
 
     private Node<K, V> binarySearch(K key) {
@@ -482,13 +481,30 @@ public class TreeMap<K extends Comparable<K>, V> {
     }
 
     public List<Node<K, V>> getSortedList() { // Sanya
-        // возвращает LinkedList<V> который содержит отсортированные по ключу ноды.
-        return null;
+        Stack<Node> stack = new Stack<> ();
+        List<Node<K, V>> list = new ArrayList<>(size);
+
+        Node<K, V> node = root; //= new Node<>();
+
+        while (node!=null || !stack.empty()){
+            if (!stack.empty()){
+                node=stack.pop();
+                if (node.getKey() != null) list.add(node);
+                if (node.right!=null) node=node.right;
+                else node=null;
+            }
+            while (node!=null){
+                stack.push(node);
+                node=node.left;
+            }
+        }
+
+        return list;
     }
 
     @Override
     public String toString() {
-        return null;
+        return getSortedList().toString();
     } // Sanya
 
     public Node<K, V> getRoot() {
