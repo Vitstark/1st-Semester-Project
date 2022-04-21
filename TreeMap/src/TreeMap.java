@@ -392,6 +392,10 @@ public class TreeMap<K extends Comparable<K>, V> {
 
     public void putAll(TreeMap<K, V> map) { // Long
         // для нашей реализации
+        List<Node<K,V>> list = map.getSortedList();
+        for (Node<K,V> node : list) {
+            put(node.key, node.value);
+        }
     }
 
     public V get(K key) {
@@ -404,9 +408,14 @@ public class TreeMap<K extends Comparable<K>, V> {
         return false;
     } // Danya
 
+
     public Collection<V> values() { // Long
-        // попробуй реализовать с помощью getSortedList()
-        return null;
+        List<Node<K,V>> map = getSortedList();
+        Collection<V> c = new ArrayList<>();
+        for (Node<K,V> node : map){
+            c.add(node.value);
+        }
+        return c;
     }
 
     public int size() {
