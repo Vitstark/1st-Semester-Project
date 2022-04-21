@@ -69,11 +69,12 @@ public class TreeMap<K extends Comparable<K>, V> {
         Node<K, V> cursor = root;
 
         while (!cursor.equals(LEAVE)) {
-            if (compare(newNode, cursor) > 0) {
+            int resultOfCompare = compare(newNode, cursor);
+            if (resultOfCompare > 0) {
                 cursor = cursor.right;
-            } else if (compare(newNode, cursor) < 0) {
+            } else if (resultOfCompare < 0) {
                 cursor = cursor.left;
-            } else if (compare(newNode, cursor) == 0) {
+            } else if (resultOfCompare == 0) {
                 if (newNode.getKey().equals(cursor.getKey())) {
                     if (newNode.equals(cursor)) {
                         return null;
@@ -255,7 +256,7 @@ public class TreeMap<K extends Comparable<K>, V> {
         return value;
     }
 
-    private Node<K,V> deleteNodeWithoutKids(Node<K, V> node) {
+    private Node<K, V> deleteNodeWithoutKids(Node<K, V> node) {
         Node<K, V> parent = node.parent;
         if (node.parent.left == node) {
             parent.left = new Node(parent);
@@ -410,31 +411,30 @@ public class TreeMap<K extends Comparable<K>, V> {
 
     public void putAll(TreeMap<K, V> map) { // Long
         // для нашей реализации
-        List<Node<K,V>> list = map.getSortedList();
-        for (Node<K,V> node : list) {
+        List<Node<K, V>> list = map.getSortedList();
+        for (Node<K, V> node : list) {
             put(node.key, node.value);
         }
     }
 
     public V get(K key) {
 
-        Node<K,V> n = root;
+        Node<K, V> n = root;
 
-        while (n != LEAVE){
+        while (n != null) {
 
             int cKeyVal = compare(n, new Node<>(key, null));
 
-            if (cKeyVal == 0){
+            if (cKeyVal >= 0) {
 
-                return n.value;
-
-            }
-            if (cKeyVal > 0){
+                if (cKeyVal == 0 && key.equals(n.key)) {
+                    return n.value;
+                }
 
                 n = n.right;
 
             }
-            if (cKeyVal < 0){
+            if (cKeyVal < 0) {
 
                 n = n.left;
 
@@ -450,36 +450,33 @@ public class TreeMap<K extends Comparable<K>, V> {
 
         Node<K, V> cursor = root;
 
-        while (cursor != LEAVE){
+        while (cursor != null) {
 
-                int cKeyVal = compare(cursor, new Node<>(key, null));
+            int cKeyVal = compare(cursor, new Node<>(key, null));
 
-                if (cKeyVal == 0){
+            if (cKeyVal >= 0) {
 
+                if (cKeyVal == 0 && key.equals(cursor.key)) {
                     return true;
-
-                }
-                if (cKeyVal > 0){
-
-                    cursor = cursor.right;
-
-                }
-                if (cKeyVal < 0){
-
-                    cursor = cursor.left;
-
                 }
 
             }
+            if (cKeyVal < 0) {
+
+                cursor = cursor.left;
+
+            }
+
+        }
         return false;
 
     } // Danya
 
 
     public Collection<V> values() { // Long
-        List<Node<K,V>> map = getSortedList();
+        List<Node<K, V>> map = getSortedList();
         Collection<V> c = new ArrayList<>();
-        for (Node<K,V> node : map){
+        for (Node<K, V> node : map) {
             c.add(node.value);
         }
         return c;
