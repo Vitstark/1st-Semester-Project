@@ -28,9 +28,6 @@ public class TreeMap<K extends Comparable<K>, V> {
     public TreeMap(Comparator<K> comparator) { // Artyom
         // конструктор, инициализирующий comparator
         this();
-        if (comparator == null) {
-            throw new RuntimeNullPointerException("comparator is null");
-        }
         this.comparator = comparator;
     }
 
