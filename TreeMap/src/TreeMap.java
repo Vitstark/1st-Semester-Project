@@ -1,7 +1,4 @@
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Comparator;
-import java.util.List;
+import java.util.*;
 
 public class TreeMap<K extends Comparable<K>, V> {
 
@@ -155,15 +152,16 @@ public class TreeMap<K extends Comparable<K>, V> {
             } else {
                 oldRoot.parent.right = newRoot;
             }
+            newRoot.parent = oldRoot.parent;
         } else {
             root = newRoot;
         }
-        newRoot.parent = oldRoot.parent;
         oldRoot.parent = newRoot;
 
         oldRoot.left = newRoot.right;
         oldRoot.left.parent = oldRoot;
         newRoot.right = oldRoot;
+        newRoot.right.parent = newRoot;
     }
 
     private void turnRight(Node<K, V> oldRoot) {
@@ -174,6 +172,7 @@ public class TreeMap<K extends Comparable<K>, V> {
             } else {
                 oldRoot.parent.right = newRoot;
             }
+
         } else {
             root = newRoot;
         }
@@ -190,9 +189,19 @@ public class TreeMap<K extends Comparable<K>, V> {
             do {
                 changeColorsOfRelatives(node);
                 node = node.parent.parent;
-            } while (node.color == RED && node.parent.color == RED && node.parent != root && getUncle(node).color == RED);
+            } while (node.color == RED && node.parent.color == RED && getUncle(node).color == RED);
         }
         if (node.color == RED && node.parent.color == RED && getUncle(node).color == BLACK) {
+            if (node.parent.right == node && node.parent.parent.left == node.parent) {
+                turnRight(node.parent);
+                node = node.left;
+            }
+
+            if (node.parent.left == node && node.parent.parent.right == node.parent) {
+                turnLeft(node.parent);
+                node = node.right;
+            }
+
             if (node.parent == node.parent.parent.left) {
                 turnLeft(node.parent.parent);
                 node.parent.right.color = RED;
@@ -396,7 +405,6 @@ public class TreeMap<K extends Comparable<K>, V> {
                 }
             }
         }
-
     }
 
     private Node<K, V> binarySearch(K key) {
@@ -491,13 +499,30 @@ public class TreeMap<K extends Comparable<K>, V> {
     }
 
     public List<Node<K, V>> getSortedList() { // Sanya
-        // возвращает LinkedList<V> который содержит отсортированные по ключу ноды.
-        return null;
+        Stack<Node> stack = new Stack<> ();
+        List<Node<K, V>> list = new ArrayList<>(size);
+
+        Node<K, V> node = root; //= new Node<>();
+
+        while (node!=null || !stack.empty()){
+            if (!stack.empty()){
+                node=stack.pop();
+                if (node.getKey() != null) list.add(node);
+                if (node.right!=null) node=node.right;
+                else node=null;
+            }
+            while (node!=null){
+                stack.push(node);
+                node=node.left;
+            }
+        }
+
+        return list;
     }
 
     @Override
     public String toString() {
-        return null;
+        return getSortedList().toString();
     } // Sanya
 
     public Node<K, V> getRoot() {
