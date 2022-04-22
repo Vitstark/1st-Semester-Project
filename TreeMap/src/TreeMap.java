@@ -1,4 +1,7 @@
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Comparator;
+import java.util.List;
 
 public class TreeMap<K extends Comparable<K>, V> {
 
@@ -187,7 +190,7 @@ public class TreeMap<K extends Comparable<K>, V> {
             do {
                 changeColorsOfRelatives(node);
                 node = node.parent.parent;
-            } while (node.color == RED && node.parent.color == RED && getUncle(node).color == RED);
+            } while (node.color == RED && node.parent.color == RED && node.parent != root && getUncle(node).color == RED);
         }
         if (node.color == RED && node.parent.color == RED && getUncle(node).color == BLACK) {
             if (node.parent == node.parent.parent.left) {
@@ -468,6 +471,7 @@ public class TreeMap<K extends Comparable<K>, V> {
             }
 
         }
+
         return false;
 
     } // Danya
