@@ -31,21 +31,14 @@ class MyComparator implements Comparator<String> {
 public class Main {
 
     public static void main(String[] args) {
-        TreeMap<Integer, Integer> map = new TreeMap<>();
+        TreeMap<Integer,Integer> map = new TreeMap<>();
 
-        Instant start;
-        Instant finish;
+        map.put(0, 0);
+        map.put(8, 8);
+        map.put(-8, -8);
+        map.put(4, 4);
+        map.put(-4, -4);
 
-        long strt;
-        long fnsh;
-
-        for (Integer i = 0; i < 100; i++){
-            start = Instant.now();
-            strt = System.nanoTime();
-            map.put(i, i);
-            finish = Instant.now();
-            fnsh = System.nanoTime();
-            System.out.println(i.intValue() + " " + (fnsh - strt));
-        }
+        System.out.println(map);
     }
 }
