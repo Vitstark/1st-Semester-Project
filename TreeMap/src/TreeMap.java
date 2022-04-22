@@ -152,15 +152,16 @@ public class TreeMap<K extends Comparable<K>, V> {
             } else {
                 oldRoot.parent.right = newRoot;
             }
+            newRoot.parent = oldRoot.parent;
         } else {
             root = newRoot;
         }
-        newRoot.parent = oldRoot.parent;
         oldRoot.parent = newRoot;
 
         oldRoot.left = newRoot.right;
         oldRoot.left.parent = oldRoot;
         newRoot.right = oldRoot;
+        newRoot.right.parent = newRoot;
     }
 
     private void turnRight(Node<K, V> oldRoot) {
@@ -171,6 +172,7 @@ public class TreeMap<K extends Comparable<K>, V> {
             } else {
                 oldRoot.parent.right = newRoot;
             }
+
         } else {
             root = newRoot;
         }
@@ -190,6 +192,16 @@ public class TreeMap<K extends Comparable<K>, V> {
             } while (node.color == RED && node.parent.color == RED && getUncle(node).color == RED);
         }
         if (node.color == RED && node.parent.color == RED && getUncle(node).color == BLACK) {
+            if (node.parent.right == node && node.parent.parent.left == node.parent) {
+                turnRight(node.parent);
+                node = node.left;
+            }
+
+            if (node.parent.left == node && node.parent.parent.right == node.parent) {
+                turnLeft(node.parent);
+                node = node.right;
+            }
+
             if (node.parent == node.parent.parent.left) {
                 turnLeft(node.parent.parent);
                 node.parent.right.color = RED;
@@ -467,6 +479,7 @@ public class TreeMap<K extends Comparable<K>, V> {
             }
 
         }
+
         return false;
 
     } // Danya
