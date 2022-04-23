@@ -11,31 +11,20 @@ public class Benchmarks {
 
     public static void main(String[] args) throws Exception {
         int numberOfMaps = 100;
-        TreeMap<Integer, Integer>[] maps = new TreeMap[numberOfMaps];
-        for (int i = 0; i < numberOfMaps; i++) {
-            maps[i] = new TreeMap<>();
-        }
-
-        XYSeries ourSeries = new XYSeries("Realization");
-
         long start;
         long finish;
-        Random random = new Random();
-
-        for (Integer i = 0; i < 100_000; i++) {
-            int sub = 0;
-            for (int j = 0; j < numberOfMaps; j++) {
-                int number = random.nextInt();
-                start = System.nanoTime();
-                maps[j].put(number, i);
-                finish = System.nanoTime();
-                if (finish - start < 50_000) {
-                    sub += finish - start;
-                }
-            }
-            sub /= numberOfMaps;
-            ourSeries.add(i.intValue(), sub);
+        
+        TreeMap<Integer, Integer>[] treeMaps = new TreeMap[100];
+        for (int i = 0; i < numberOfMaps; i++) {
+            treeMaps[i] = new TreeMap<>();
         }
+
+        for (int i = 0; i < 100; i++) {
+            
+        }
+
+        XYSeries series = new XYSeries("Realization");
+        
         XYDataset xyDataset = new XYSeriesCollection(ourSeries);
 
         JFreeChart chart = ChartFactory
@@ -50,7 +39,7 @@ public class Benchmarks {
         frame.add(new ChartPanel(chart));
 
         frame.setSize(1200, 900);
-        frame.setVisible(true);
+        
         frame.show();
     }
 }

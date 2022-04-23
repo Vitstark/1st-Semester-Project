@@ -1,19 +1,17 @@
-import java.io.IOException;
-import java.io.OutputStream;
+import java.io.*;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.util.Comparator;
 import java.util.Random;
 
 public class Main {
 
-    public static void main(String[] args) {
-
+    public static void main(String[] args) throws IOException {
+        writeDataSets();
     }
 
     public static void writeDataSets() throws IOException{
         Path dirPath = Path.of("datasets");
-        DataSetCreator dataSetCreator = new DataSetCreator(1_000_000_000);
+        DataSetCreator dataSetCreator = new DataSetCreator(Integer.MAX_VALUE);
         for (int i = 2; i < 7; i++) {
             Path pathOfSetsDirectory = Path.of(dirPath + "/" + i);
             Files.createDirectory(pathOfSetsDirectory);
@@ -35,10 +33,10 @@ class DataSetCreator {
         for (int i = 1; i < numberOfSets + 1; i++) {
             Path pathOfFile = Path.of(outPath.toString() + "/" + i + ".txt");
             Files.createFile(pathOfFile);
-            try (OutputStream outputStream = Files.newOutputStream(pathOfFile)) {
+            try (PrintWriter printWriter = new PrintWriter(new FileOutputStream(pathOfFile.toString()))) {
                 for (int j = 0; j < Math.pow(10, deg); j++) {
-                    outputStream.write(numberGenerator.nextInt(rangeOfValues));
-                    outputStream.write('\n');
+                    printWriter.print(numberGenerator.nextInt(rangeOfValues));
+                    printWriter.println();
                 }
             } catch (IOException e) {
                 e.printStackTrace();
