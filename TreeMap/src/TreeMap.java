@@ -116,6 +116,35 @@ public class TreeMap<K extends Comparable<K>, V> {
         return null;
     }
 
+    private void balanceAfterPut(Node<K, V> node) {
+        if (getUncle(node).color == RED) {
+            do {
+                changeColorsOfRelatives(node);
+                node = node.parent.parent;
+            } while (node.color == RED && node.parent.color == RED && getUncle(node).color == RED);
+        }
+        if (node.color == RED && node.parent.color == RED && getUncle(node).color == BLACK) {
+            if (node.parent.right == node && node.parent.parent.left == node.parent) {
+                turnRight(node.parent);
+                node = node.left;
+            }
+
+            if (node.parent.left == node && node.parent.parent.right == node.parent) {
+                turnLeft(node.parent);
+                node = node.right;
+            }
+
+            if (node.parent == node.parent.parent.left) {
+                turnLeft(node.parent.parent);
+                node.parent.right.color = RED;
+            } else {
+                turnRight(node.parent.parent);
+                node.parent.left.color = RED;
+            }
+            node.parent.color = BLACK;
+        }
+    }
+
     private Node<K, V> getUncle(Node<K, V> node) {
         Node<K, V> uncle = node.parent.parent;
         if (uncle.left == node.parent) {
@@ -184,35 +213,6 @@ public class TreeMap<K extends Comparable<K>, V> {
         newRoot.left = oldRoot;
     }
 
-    private void balanceAfterPut(Node<K, V> node) {
-        if (getUncle(node).color == RED) {
-            do {
-                changeColorsOfRelatives(node);
-                node = node.parent.parent;
-            } while (node.color == RED && node.parent.color == RED && getUncle(node).color == RED);
-        }
-        if (node.color == RED && node.parent.color == RED && getUncle(node).color == BLACK) {
-            if (node.parent.right == node && node.parent.parent.left == node.parent) {
-                turnRight(node.parent);
-                node = node.left;
-            }
-
-            if (node.parent.left == node && node.parent.parent.right == node.parent) {
-                turnLeft(node.parent);
-                node = node.right;
-            }
-
-            if (node.parent == node.parent.parent.left) {
-                turnLeft(node.parent.parent);
-                node.parent.right.color = RED;
-            } else {
-                turnRight(node.parent.parent);
-                node.parent.left.color = RED;
-            }
-            node.parent.color = BLACK;
-        }
-    }
-
     public V remove(K key) { // Vitalii
         if (root == null) {
             return null;
@@ -266,6 +266,43 @@ public class TreeMap<K extends Comparable<K>, V> {
         }
 
         return value;
+    }
+
+    private void balanceAfterRemove(Node<K, V> node) {
+        Node<K, V> brother = getBrother(node);
+
+        if (brother.color == RED) {
+            if (node.parent.right == brother) {
+                turnRight(node.parent);
+            } else {
+                turnLeft(node.parent);
+
+            }
+            brother.color = BLACK;
+            node.parent.color = RED;
+        }
+
+        brother = getBrother(node);
+        if (brother.color == BLACK && brother.left.color == BLACK
+                && brother.right.color == BLACK) {
+            balanceIfNodeHas3BlackRelatives(node);
+            return;
+        }
+
+        if (brother.color == BLACK) {
+            if (node.parent.right == brother) {
+                if (brother.right.color == RED) {
+                    balanceIfOutsideNephewOfRightBrotherIsRED(node);
+                } else if (brother.left.color == RED)
+                    balanceIfInsideNephewOfRightBrotherIsRED(node);
+            } else {
+                if (brother.left.color == RED) {
+                    balanceIfOutsideNephewOfLeftBrotherIsRED(node);
+                } else if (brother.right.color == RED) {
+                    balanceIfInsideNephewOfLeftBrotherIsRED(node);
+                }
+            }
+        }
     }
 
     private Node<K, V> deleteNodeWithoutKids(Node<K, V> node) {
@@ -368,43 +405,6 @@ public class TreeMap<K extends Comparable<K>, V> {
         brother.color = RED;
         brother.parent.color = BLACK;
         balanceIfOutsideNephewOfRightBrotherIsRED(node);
-    }
-
-    private void balanceAfterRemove(Node<K, V> node) {
-        Node<K, V> brother = getBrother(node);
-
-        if (brother.color == RED) {
-            if (node.parent.right == brother) {
-                turnRight(node.parent);
-            } else {
-                turnLeft(node.parent);
-
-            }
-            brother.color = BLACK;
-            node.parent.color = RED;
-        }
-
-        brother = getBrother(node);
-        if (brother.color == BLACK && brother.left.color == BLACK
-                && brother.right.color == BLACK) {
-            balanceIfNodeHas3BlackRelatives(node);
-            return;
-        }
-
-        if (brother.color == BLACK) {
-            if (node.parent.right == brother) {
-                if (brother.right.color == RED) {
-                    balanceIfOutsideNephewOfRightBrotherIsRED(node);
-                } else if (brother.left.color == RED)
-                    balanceIfInsideNephewOfRightBrotherIsRED(node);
-            } else {
-                if (brother.left.color == RED) {
-                    balanceIfOutsideNephewOfLeftBrotherIsRED(node);
-                } else if (brother.right.color == RED) {
-                    balanceIfInsideNephewOfLeftBrotherIsRED(node);
-                }
-            }
-        }
     }
 
     private Node<K, V> binarySearch(K key) {
