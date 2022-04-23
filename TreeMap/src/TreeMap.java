@@ -410,6 +410,7 @@ public class TreeMap<K extends Comparable<K>, V> {
     private Node<K, V> binarySearch(K key) {
         Node<K, V> cursor = root;
         Node<K, V> necessaryNode = new Node(key, null);
+
         while (!cursor.equals(LEAVE) && !cursor.key.equals(key)) {
             if (compare(necessaryNode, cursor) < 0) {
                 cursor = cursor.left;
@@ -431,10 +432,11 @@ public class TreeMap<K extends Comparable<K>, V> {
     public V get(K key) {
 
         Node<K, V> n = root;
+        Node<K, V> necessaryNode = new Node<>(key, null);
 
         while (n != null) {
 
-            int cKeyVal = compare(n, new Node<>(key, null));
+            int cKeyVal = compare(n, necessaryNode);
 
             if (cKeyVal >= 0) {
 
@@ -460,10 +462,11 @@ public class TreeMap<K extends Comparable<K>, V> {
     public boolean containsKey(K key) {
 
         Node<K, V> cursor = root;
+        Node<K, V> necessaryNode = new Node<>(key, null);
 
         while (cursor != null) {
 
-            int cKeyVal = compare(cursor, new Node<>(key, null));
+            int cKeyVal = compare(cursor, necessaryNode);
 
             if (cKeyVal >= 0) {
 
