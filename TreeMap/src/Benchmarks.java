@@ -10,7 +10,7 @@ import java.util.Random;
 public class Benchmarks {
 
     public static void main(String[] args) throws Exception {
-        int numberOfMaps = 200;
+        int numberOfMaps = 100;
         TreeMap<Integer, Integer>[] maps = new TreeMap[numberOfMaps];
         for (int i = 0; i < numberOfMaps; i++) {
             maps[i] = new TreeMap<>();
@@ -29,7 +29,7 @@ public class Benchmarks {
                 start = System.nanoTime();
                 maps[j].put(number, i);
                 finish = System.nanoTime();
-                if (finish - start < 100_000) {
+                if (finish - start < 50_000) {
                     sub += finish - start;
                 }
             }
