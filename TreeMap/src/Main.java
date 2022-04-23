@@ -1,14 +1,14 @@
 public class Main {
 
     public static void main(String[] args) {
-        TreeMap<Integer,Integer> map = new TreeMap<>();
+        TreeMap<Integer, String> map = new TreeMap<>();
 
-        map.put(0, 0);
-        map.put(8, 8);
-        map.put(-8, -8);
-        map.put(4, 4);
-        map.put(-4, -4);
+        map.put(0, "");
+        map.put(8, "aa");
+        map.put(-8, "-aa");
+        map.put(4, "a");
+        map.put(-4, "-a");
 
-        System.out.println(map);
+        System.out.println(map.values());
     }
 }
