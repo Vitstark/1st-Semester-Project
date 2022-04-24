@@ -224,11 +224,28 @@ public class TreeMap<K extends Comparable<K>, V> {
         boolean colorOfDeletedNode = cursor.color;
         size--;
 
-        if (cursor.equals(root) && size == 0) {
+        if (size == 0) {
             root = null;
             min = null;
             max = null;
             return value;
+        }
+
+        if (size == 1) {
+            if (cursor.equals(root)) {
+                if (cursor.left.key != null) {
+                    root = cursor.left;
+                    root.parent = null;
+                } else {
+                    root = cursor.right;
+                    root.parent = null;
+                }
+            } else {
+                root.left = null;
+                root.right = null;
+            }
+            max = root;
+            min = root;
         }
 
         if (cursor == max) {
@@ -319,17 +336,11 @@ public class TreeMap<K extends Comparable<K>, V> {
         if (parent.left == node) {
             parent.left = node.left.equals(LEAVE) ? node.right : node.left;
             parent.left.parent = parent;
-            node = parent.left;
-            if (parent.color == RED && parent.left.color == RED) {
-                parent.left.color = BLACK;
-            }
+            parent.left.color = BLACK;
         } else {
             parent.right = node.left.equals(LEAVE) ? node.right : node.left;
             parent.right.parent = parent;
-            node = parent.right;
-            if (parent.color == RED && parent.right.color == RED) {
-                parent.right.color = BLACK;
-            }
+            parent.right.color = BLACK;
         }
     }
 
@@ -358,12 +369,9 @@ public class TreeMap<K extends Comparable<K>, V> {
 
     private void balanceIfNodeHas3BlackRelatives(Node<K, V> node) {
         Node<K, V> brother = getBrother(node);
-        do {
-            brother.color = RED;
-            node.parent.color = BLACK;
-            brother = getBrother(node);
-        } while (node != null && node.color == BLACK && brother.color == BLACK
-                && brother.left.color == BLACK && brother.right.color == BLACK);
+        brother.color = RED;
+        node.parent.color = BLACK;
+        balanceAfterRemove(node.parent);
     }
 
     private void balanceIfOutsideNephewOfLeftBrotherIsRED(Node<K, V> node) {
@@ -375,6 +383,7 @@ public class TreeMap<K extends Comparable<K>, V> {
         brother.color = brother.right.color;
         brother.right.color = colorOfBrother;
         brother.left.color = BLACK;
+        root.color = BLACK;
     }
 
     private void balanceIfOutsideNephewOfRightBrotherIsRED(Node<K, V> node) {
@@ -386,11 +395,12 @@ public class TreeMap<K extends Comparable<K>, V> {
         brother.color = brother.left.color;
         brother.left.color = colorOfBrother;
         brother.right.color = BLACK;
+        root.color = BLACK;
     }
 
     private void balanceIfInsideNephewOfLeftBrotherIsRED(Node<K, V> node) {
         Node<K, V> brother = getBrother(node);
-        turnLeft(brother);
+        turnRight(brother);
         brother.color = RED;
         brother.parent.color = BLACK;
         balanceIfOutsideNephewOfLeftBrotherIsRED(node);
@@ -398,7 +408,7 @@ public class TreeMap<K extends Comparable<K>, V> {
 
     private void balanceIfInsideNephewOfRightBrotherIsRED(Node<K, V> node) {
         Node<K, V> brother = getBrother(node);
-        turnRight(brother);
+        turnLeft(brother);
         brother.color = RED;
         brother.parent.color = BLACK;
         balanceIfOutsideNephewOfRightBrotherIsRED(node);
@@ -461,7 +471,7 @@ public class TreeMap<K extends Comparable<K>, V> {
         Node<K, V> cursor = root;
         Node<K, V> necessaryNode = new Node<>(key, null);
 
-        while (cursor != null) {
+        while (cursor.left != null && cursor.right != null) {
 
             int cKeyVal = compare(cursor, necessaryNode);
 
@@ -470,6 +480,8 @@ public class TreeMap<K extends Comparable<K>, V> {
                 if (cKeyVal == 0 && key.equals(cursor.key)) {
                     return true;
                 }
+
+                cursor = cursor.right;
 
             }
             if (cKeyVal < 0) {
@@ -499,21 +511,21 @@ public class TreeMap<K extends Comparable<K>, V> {
     }
 
     public List<Node<K, V>> getSortedList() { // Sanya
-        Stack<Node> stack = new Stack<> ();
+        Stack<Node> stack = new Stack<>();
         List<Node<K, V>> list = new ArrayList<>(size);
 
         Node<K, V> node = root; //= new Node<>();
 
-        while (node!=null || !stack.empty()){
-            if (!stack.empty()){
-                node=stack.pop();
+        while (node != null || !stack.empty()) {
+            if (!stack.empty()) {
+                node = stack.pop();
                 if (node.getKey() != null) list.add(node);
-                if (node.right!=null) node=node.right;
-                else node=null;
+                if (node.right != null) node = node.right;
+                else node = null;
             }
-            while (node!=null){
+            while (node != null) {
                 stack.push(node);
-                node=node.left;
+                node = node.left;
             }
         }
 

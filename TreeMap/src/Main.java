@@ -1,12 +1,44 @@
 import java.io.*;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.Random;
 
 public class Main {
 
     public static void main(String[] args) throws IOException {
-        writeDataSets();
+        TreeMap<Integer, Integer> tree = new TreeMap<>();
+        Random random = new Random();
+        tree.put(2, 0);
+        tree.put(-2, 1);
+        tree.put(13, 2);
+        tree.put(3, 3);
+        tree.put(11, 4);
+        tree.put(12, 5);
+        tree.put(-6, 6);
+        tree.put(6, 7);
+        tree.put(1, 8);
+        tree.put(9, 9);
+
+        List<Integer> list = tree.getSortedList()
+                .stream()
+                .map(x -> x.getKey())
+                .toList();
+
+        System.out.println(tree);
+
+        int a = 10 + 1;
+
+        try {
+            for (Integer elem : list) {
+                tree.remove(elem);
+            }
+        } catch (NullPointerException e) {
+            e.printStackTrace();
+            System.out.println(tree);
+        }
+
     }
 
     public static void writeDataSets() throws IOException{

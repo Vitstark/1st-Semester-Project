@@ -8,18 +8,17 @@ import java.awt.*;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.List;
-import java.util.TreeMap;
 
 public class Benchmarks {
 
     public static void main(String[] args) throws Exception {
         int NUMBER_OF_FILES = 100;
-        int NUMBER_OF_INTEGERS = 100_000;
+        int NUMBER_OF_INTEGERS = 1_000;
 
         long start;
         long finish;
         long [] timeAverage = new long[NUMBER_OF_INTEGERS];
-        Path setsPath = Path.of("datasets/5");
+        Path setsPath = Path.of("datasets/3");
         TreeMap<Integer, Integer> tree;
 
         List<Integer> list;
@@ -32,14 +31,17 @@ public class Benchmarks {
                     .toList();
             for (int j = 0; j < NUMBER_OF_INTEGERS; j++) {
                 Integer key = list.get(j);
-                start = System.nanoTime();
                 tree.put(key, null);
-                finish = System.nanoTime();
-                if (finish - start < 20000) {
-                    timeAverage[j] += (finish - start);
-                }
             }
 
+            for (Integer elem : list) {
+                start = System.nanoTime();
+                tree.remove(elem);
+                finish = System.nanoTime();
+                long div = finish - start;
+                timeAverage[i] += div;
+            }
+            System.out.println(i);
         }
 
         XYSeries series = new XYSeries("TreeMap");
@@ -52,7 +54,7 @@ public class Benchmarks {
         XYDataset xyDataset = new XYSeriesCollection(series);
 
         JFreeChart chart = ChartFactory
-                .createXYLineChart("Тест на добавление", "element", "time(nanoseconds)",
+                .createXYLineChart("Удаление", "element", "time(nanoseconds)",
                         xyDataset,
                         PlotOrientation.VERTICAL,
                         true, true, false);
