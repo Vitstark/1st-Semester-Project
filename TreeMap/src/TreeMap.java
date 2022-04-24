@@ -246,21 +246,22 @@ public class TreeMap<K extends Comparable<K>, V> {
             }
             max = root;
             min = root;
+            return value;
         }
 
         if (cursor == max) {
-            if (cursor == root) {
-                max = max.left;
-            } else {
-                max = max.parent;
+            if (!cursor.left.equals(LEAVE)) {
+                max = cursor.left;
+            } else if (cursor != root) {
+                max = cursor.parent;
             }
         }
 
         if (cursor == min) {
-            if (cursor == root) {
-                min = min.right;
-            } else {
-                min = min.parent;
+            if (!cursor.right.equals(LEAVE)) {
+                min = cursor.right;
+            } else if (cursor != root) {
+                min = cursor.parent;
             }
         }
 
@@ -369,9 +370,14 @@ public class TreeMap<K extends Comparable<K>, V> {
 
     private void balanceIfNodeHas3BlackRelatives(Node<K, V> node) {
         Node<K, V> brother = getBrother(node);
+        boolean colorOfParent = node.parent.color;
+
         brother.color = RED;
         node.parent.color = BLACK;
-        balanceAfterRemove(node.parent);
+
+        if (colorOfParent == BLACK & node.parent != root) {
+            balanceAfterRemove(node.parent);
+        }
     }
 
     private void balanceIfOutsideNephewOfLeftBrotherIsRED(Node<K, V> node) {

@@ -10,6 +10,7 @@ public class Main {
     public static void main(String[] args) throws IOException {
         TreeMap<Integer, Integer> tree = new TreeMap<>();
         Random random = new Random();
+        /*
         tree.put(2, 0);
         tree.put(-2, 1);
         tree.put(13, 2);
@@ -20,6 +21,11 @@ public class Main {
         tree.put(6, 7);
         tree.put(1, 8);
         tree.put(9, 9);
+        */
+
+        for (int i = 0; i < 100000; i++) {
+            tree.put(random.nextInt(), null);
+        }
 
         List<Integer> list = tree.getSortedList()
                 .stream()
@@ -38,6 +44,8 @@ public class Main {
             e.printStackTrace();
             System.out.println(tree);
         }
+
+        System.out.println(tree);
 
     }
 
