@@ -66,11 +66,12 @@ public class TreeMap<K extends Comparable<K>, V> {
         Node<K, V> cursor = root;
 
         while (!cursor.equals(LEAVE)) {
-            if (compare(newNode, cursor) > 0) {
+            int resultOfCompare = compare(newNode, cursor);
+            if (resultOfCompare > 0) {
                 cursor = cursor.right;
-            } else if (compare(newNode, cursor) < 0) {
+            } else if (resultOfCompare < 0) {
                 cursor = cursor.left;
-            } else if (compare(newNode, cursor) == 0) {
+            } else if (resultOfCompare == 0) {
                 if (newNode.getKey().equals(cursor.getKey())) {
                     if (newNode.equals(cursor)) {
                         return null;
@@ -112,6 +113,35 @@ public class TreeMap<K extends Comparable<K>, V> {
         return null;
     }
 
+    private void balanceAfterPut(Node<K, V> node) {
+        if (getUncle(node).color == RED) {
+            do {
+                changeColorsOfRelatives(node);
+                node = node.parent.parent;
+            } while (node.color == RED && node.parent.color == RED && getUncle(node).color == RED);
+        }
+        if (node.color == RED && node.parent.color == RED && getUncle(node).color == BLACK) {
+            if (node.parent.right == node && node.parent.parent.left == node.parent) {
+                turnRight(node.parent);
+                node = node.left;
+            }
+
+            if (node.parent.left == node && node.parent.parent.right == node.parent) {
+                turnLeft(node.parent);
+                node = node.right;
+            }
+
+            if (node.parent == node.parent.parent.left) {
+                turnLeft(node.parent.parent);
+                node.parent.right.color = RED;
+            } else {
+                turnRight(node.parent.parent);
+                node.parent.left.color = RED;
+            }
+            node.parent.color = BLACK;
+        }
+    }
+
     private Node<K, V> getUncle(Node<K, V> node) {
         Node<K, V> uncle = node.parent.parent;
         if (uncle.left == node.parent) {
@@ -148,15 +178,16 @@ public class TreeMap<K extends Comparable<K>, V> {
             } else {
                 oldRoot.parent.right = newRoot;
             }
+            newRoot.parent = oldRoot.parent;
         } else {
             root = newRoot;
         }
-        newRoot.parent = oldRoot.parent;
         oldRoot.parent = newRoot;
 
         oldRoot.left = newRoot.right;
         oldRoot.left.parent = oldRoot;
         newRoot.right = oldRoot;
+        newRoot.right.parent = newRoot;
     }
 
     private void turnRight(Node<K, V> oldRoot) {
@@ -167,6 +198,7 @@ public class TreeMap<K extends Comparable<K>, V> {
             } else {
                 oldRoot.parent.right = newRoot;
             }
+
         } else {
             root = newRoot;
         }
@@ -176,25 +208,6 @@ public class TreeMap<K extends Comparable<K>, V> {
         oldRoot.right = newRoot.left;
         oldRoot.right.parent = oldRoot;
         newRoot.left = oldRoot;
-    }
-
-    private void balanceAfterPut(Node<K, V> node) {
-        if (getUncle(node).color == RED) {
-            do {
-                changeColorsOfRelatives(node);
-                node = node.parent.parent;
-            } while (node.color == RED && node.parent.color == RED && getUncle(node).color == RED);
-        }
-        if (node.color == RED && node.parent.color == RED && getUncle(node).color == BLACK) {
-            if (node.parent == node.parent.parent.left) {
-                turnLeft(node.parent.parent);
-                node.parent.right.color = RED;
-            } else {
-                turnRight(node.parent.parent);
-                node.parent.left.color = RED;
-            }
-            node.parent.color = BLACK;
-        }
     }
 
     public V remove(K key) { // Vitalii
@@ -252,7 +265,44 @@ public class TreeMap<K extends Comparable<K>, V> {
         return value;
     }
 
-    private Node<K,V> deleteNodeWithoutKids(Node<K, V> node) {
+    private void balanceAfterRemove(Node<K, V> node) {
+        Node<K, V> brother = getBrother(node);
+
+        if (brother.color == RED) {
+            if (node.parent.right == brother) {
+                turnRight(node.parent);
+            } else {
+                turnLeft(node.parent);
+
+            }
+            brother.color = BLACK;
+            node.parent.color = RED;
+        }
+
+        brother = getBrother(node);
+        if (brother.color == BLACK && brother.left.color == BLACK
+                && brother.right.color == BLACK) {
+            balanceIfNodeHas3BlackRelatives(node);
+            return;
+        }
+
+        if (brother.color == BLACK) {
+            if (node.parent.right == brother) {
+                if (brother.right.color == RED) {
+                    balanceIfOutsideNephewOfRightBrotherIsRED(node);
+                } else if (brother.left.color == RED)
+                    balanceIfInsideNephewOfRightBrotherIsRED(node);
+            } else {
+                if (brother.left.color == RED) {
+                    balanceIfOutsideNephewOfLeftBrotherIsRED(node);
+                } else if (brother.right.color == RED) {
+                    balanceIfInsideNephewOfLeftBrotherIsRED(node);
+                }
+            }
+        }
+    }
+
+    private Node<K, V> deleteNodeWithoutKids(Node<K, V> node) {
         Node<K, V> parent = node.parent;
         if (node.parent.left == node) {
             parent.left = new Node(parent);
@@ -354,47 +404,10 @@ public class TreeMap<K extends Comparable<K>, V> {
         balanceIfOutsideNephewOfRightBrotherIsRED(node);
     }
 
-    private void balanceAfterRemove(Node<K, V> node) {
-        Node<K, V> brother = getBrother(node);
-
-        if (brother.color == RED) {
-            if (node.parent.right == brother) {
-                turnRight(node.parent);
-            } else {
-                turnLeft(node.parent);
-
-            }
-            brother.color = BLACK;
-            node.parent.color = RED;
-        }
-
-        brother = getBrother(node);
-        if (brother.color == BLACK && brother.left.color == BLACK
-                && brother.right.color == BLACK) {
-            balanceIfNodeHas3BlackRelatives(node);
-            return;
-        }
-
-        if (brother.color == BLACK) {
-            if (node.parent.right == brother) {
-                if (brother.right.color == RED) {
-                    balanceIfOutsideNephewOfRightBrotherIsRED(node);
-                } else if (brother.left.color == RED)
-                    balanceIfInsideNephewOfRightBrotherIsRED(node);
-            } else {
-                if (brother.left.color == RED) {
-                    balanceIfOutsideNephewOfLeftBrotherIsRED(node);
-                } else if (brother.right.color == RED) {
-                    balanceIfInsideNephewOfLeftBrotherIsRED(node);
-                }
-            }
-        }
-
-    }
-
     private Node<K, V> binarySearch(K key) {
         Node<K, V> cursor = root;
         Node<K, V> necessaryNode = new Node(key, null);
+
         while (!cursor.equals(LEAVE) && !cursor.key.equals(key)) {
             if (compare(necessaryNode, cursor) < 0) {
                 cursor = cursor.left;
@@ -407,31 +420,31 @@ public class TreeMap<K extends Comparable<K>, V> {
 
     public void putAll(TreeMap<K, V> map) { // Long
         // для нашей реализации
-        List<Node<K,V>> list = map.getSortedList();
-        for (Node<K,V> node : list) {
+        List<Node<K, V>> list = map.getSortedList();
+        for (Node<K, V> node : list) {
             put(node.key, node.value);
         }
     }
 
     public V get(K key) {
 
-        Node<K,V> n = root;
+        Node<K, V> n = root;
+        Node<K, V> necessaryNode = new Node<>(key, null);
 
-        while (n != LEAVE){
+        while (n != null) {
 
-            int cKeyVal = compare(n, new Node<>(key, null));
+            int cKeyVal = compare(n, necessaryNode);
 
-            if (cKeyVal == 0){
+            if (cKeyVal >= 0) {
 
-                return n.value;
-
-            }
-            if (cKeyVal > 0){
+                if (cKeyVal == 0 && key.equals(n.key)) {
+                    return n.value;
+                }
 
                 n = n.right;
 
             }
-            if (cKeyVal < 0){
+            if (cKeyVal < 0) {
 
                 n = n.left;
 
@@ -446,37 +459,36 @@ public class TreeMap<K extends Comparable<K>, V> {
     public boolean containsKey(K key) {
 
         Node<K, V> cursor = root;
+        Node<K, V> necessaryNode = new Node<>(key, null);
 
-        while (cursor != LEAVE){
+        while (cursor != null) {
 
-                int cKeyVal = compare(cursor, new Node<>(key, null));
+            int cKeyVal = compare(cursor, necessaryNode);
 
-                if (cKeyVal == 0){
+            if (cKeyVal >= 0) {
 
+                if (cKeyVal == 0 && key.equals(cursor.key)) {
                     return true;
-
-                }
-                if (cKeyVal > 0){
-
-                    cursor = cursor.right;
-
-                }
-                if (cKeyVal < 0){
-
-                    cursor = cursor.left;
-
                 }
 
             }
+            if (cKeyVal < 0) {
+
+                cursor = cursor.left;
+
+            }
+
+        }
+
         return false;
 
     } // Danya
 
 
     public Collection<V> values() { // Long
-        List<Node<K,V>> map = getSortedList();
+        List<Node<K, V>> map = getSortedList();
         Collection<V> c = new ArrayList<>();
-        for (Node<K,V> node : map){
+        for (Node<K, V> node : map) {
             c.add(node.value);
         }
         return c;
@@ -487,13 +499,30 @@ public class TreeMap<K extends Comparable<K>, V> {
     }
 
     public List<Node<K, V>> getSortedList() { // Sanya
-        // возвращает LinkedList<V> который содержит отсортированные по ключу ноды.
-        return null;
+        Stack<Node> stack = new Stack<> ();
+        List<Node<K, V>> list = new ArrayList<>(size);
+
+        Node<K, V> node = root; //= new Node<>();
+
+        while (node!=null || !stack.empty()){
+            if (!stack.empty()){
+                node=stack.pop();
+                if (node.getKey() != null) list.add(node);
+                if (node.right!=null) node=node.right;
+                else node=null;
+            }
+            while (node!=null){
+                stack.push(node);
+                node=node.left;
+            }
+        }
+
+        return list;
     }
 
     @Override
     public String toString() {
-        return null;
+        return getSortedList().toString();
     } // Sanya
 
     public Node<K, V> getRoot() {
