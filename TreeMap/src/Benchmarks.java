@@ -1,5 +1,6 @@
 import javax.swing.*;
 
+import com.sun.source.tree.Tree;
 import org.jfree.data.xy.*;
 import org.jfree.chart.*;
 import org.jfree.chart.plot.PlotOrientation;
@@ -7,7 +8,10 @@ import org.jfree.chart.plot.PlotOrientation;
 import java.awt.*;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
+import java.util.TreeMap;
 
 public class Benchmarks {
 
