@@ -34,19 +34,6 @@ public class Benchmarks {
                 Integer key = list.get(j);
                 tree.put(key, null);
             }
-            try {
-                for (Integer elem : list) {
-                    start = System.nanoTime();
-                    tree.remove(elem);
-                    finish = System.nanoTime();
-                    long div = finish - start;
-                    timeAverage[i] += div;
-                }
-            } catch (NullPointerException e) {
-                e.printStackTrace();;
-                System.out.println(i + "\n" + + tree.size() + "\n" + tree);
-                return;
-            }
             System.out.println(i);
         }
 
