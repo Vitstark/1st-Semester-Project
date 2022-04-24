@@ -22,7 +22,6 @@ public class Main {
         tree.put(1, 8);
         tree.put(9, 9);
         */
-
         for (int i = 0; i < 10_000; i++) {
             tree.put(random.nextInt(Integer.MAX_VALUE), null);
         }
@@ -33,8 +32,6 @@ public class Main {
                 .toList();
 
         System.out.println(tree);
-
-        int a = 10 + 1;
 
         for (Integer elem : list) {
             tree.remove(elem);
