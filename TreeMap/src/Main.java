@@ -23,8 +23,8 @@ public class Main {
         tree.put(9, 9);
         */
 
-        for (int i = 0; i < 100000; i++) {
-            tree.put(random.nextInt(), null);
+        for (int i = 0; i < 10_000; i++) {
+            tree.put(random.nextInt(Integer.MAX_VALUE), null);
         }
 
         List<Integer> list = tree.getSortedList()
@@ -36,20 +36,15 @@ public class Main {
 
         int a = 10 + 1;
 
-        try {
-            for (Integer elem : list) {
-                tree.remove(elem);
-            }
-        } catch (NullPointerException e) {
-            e.printStackTrace();
-            System.out.println(tree);
+        for (Integer elem : list) {
+            tree.remove(elem);
         }
 
         System.out.println(tree);
 
     }
 
-    public static void writeDataSets() throws IOException{
+    public static void writeDataSets() throws IOException {
         Path dirPath = Path.of("datasets");
         DataSetCreator dataSetCreator = new DataSetCreator(Integer.MAX_VALUE);
         for (int i = 2; i < 7; i++) {
