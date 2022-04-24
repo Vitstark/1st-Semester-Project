@@ -250,18 +250,18 @@ public class TreeMap<K extends Comparable<K>, V> {
         }
 
         if (cursor == max) {
-            if (cursor == root) {
-                max = max.left;
-            } else {
-                max = max.parent;
+            if (!cursor.left.equals(LEAVE)) {
+                max = cursor.left;
+            } else if (cursor != root) {
+                max = cursor.parent;
             }
         }
 
         if (cursor == min) {
-            if (cursor == root) {
-                min = min.right;
-            } else {
-                min = min.parent;
+            if (!cursor.right.equals(LEAVE)) {
+                min = cursor.right;
+            } else if (cursor != root) {
+                min = cursor.parent;
             }
         }
 

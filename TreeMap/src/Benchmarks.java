@@ -29,24 +29,30 @@ public class Benchmarks {
                     .lines(Path.of(setsPath + "/" + i + ".txt"))
                     .map(x -> Integer.parseInt(x))
                     .toList();
+
             for (int j = 0; j < NUMBER_OF_INTEGERS; j++) {
                 Integer key = list.get(j);
                 tree.put(key, null);
             }
-
-            for (Integer elem : list) {
-                start = System.nanoTime();
-                tree.remove(elem);
-                finish = System.nanoTime();
-                long div = finish - start;
-                timeAverage[i] += div;
+            try {
+                for (Integer elem : list) {
+                    start = System.nanoTime();
+                    tree.remove(elem);
+                    finish = System.nanoTime();
+                    long div = finish - start;
+                    timeAverage[i] += div;
+                }
+            } catch (NullPointerException e) {
+                e.printStackTrace();;
+                System.out.println(i + "\n" + + tree.size() + "\n" + tree);
+                return;
             }
             System.out.println(i);
         }
 
         XYSeries series = new XYSeries("TreeMap");
 
-        for (int i = 5; i < NUMBER_OF_INTEGERS; i++) {
+        for (int i = 0; i < NUMBER_OF_INTEGERS; i++) {
             timeAverage[i] /= NUMBER_OF_FILES;
             series.add(i, timeAverage[i]);
         }

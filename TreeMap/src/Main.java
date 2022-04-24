@@ -23,8 +23,8 @@ public class Main {
         tree.put(9, 9);
         */
 
-        for (int i = 0; i < 10000; i++) {
-            tree.put(random.nextInt(100000) - 50000, i);
+        for (int i = 0; i < 100000; i++) {
+            tree.put(random.nextInt(), null);
         }
 
         List<Integer> list = tree.getSortedList()
