@@ -246,6 +246,7 @@ public class TreeMap<K extends Comparable<K>, V> {
             }
             max = root;
             min = root;
+            return value;
         }
 
         if (cursor == max) {
@@ -369,9 +370,14 @@ public class TreeMap<K extends Comparable<K>, V> {
 
     private void balanceIfNodeHas3BlackRelatives(Node<K, V> node) {
         Node<K, V> brother = getBrother(node);
+        boolean colorOfParent = node.parent.color;
+
         brother.color = RED;
         node.parent.color = BLACK;
-        balanceAfterRemove(node.parent);
+
+        if (colorOfParent == BLACK & node.parent != root) {
+            balanceAfterRemove(node.parent);
+        }
     }
 
     private void balanceIfOutsideNephewOfLeftBrotherIsRED(Node<K, V> node) {
